@@ -1,0 +1,13 @@
+Game mechanics
+
+Quand plusieurs captures possibles à la suite           Should be good
+win quand l'autre n'a plus de coup                      I think done
+forcer la capture                                       done
+
+AI
+
+Define the inputs
+Define the possible actions
+Define the fit function
+
+
