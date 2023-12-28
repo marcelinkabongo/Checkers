@@ -58,9 +58,9 @@ class Population{
 		console.log(averageSum);
 		let children = [];
 		
-		this.fillMatingPool();
+		this.fillMatingPool(); //Creates a pool where an element is present n times if his fitness is n
 		for(let i = 0; i < this.population.length; i++){
-			let parent1 = this.selectPlayer();
+			let parent1 = this.selectPlayer(); //Randomly selects a player from the mating pool
 			let parent2 = this.selectPlayer();
 			if(parent1.fitness > parent2.fitness)
 				children.push(parent1.crossover(parent2));
