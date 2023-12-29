@@ -129,7 +129,6 @@ function markPossiblePosition(piece, player, number, capture) {
   } else {
     newPiecesPositionsCapture.push(new Piece(piece.row + 2 * player, piece.column + number));
   }
-
 }
 
 function findPossibleNewPosition(piece, player) {

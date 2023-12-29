@@ -4,10 +4,13 @@ Quand plusieurs captures possibles à la suite           Should be good
 win quand l'autre n'a plus de coup                      I think done
 forcer la capture                                       done
 
+
+
 AI
 
-Define the inputs
-Define the possible actions
-Define the fit function
+change all the functions to be used by computer and not player
+Define the inputs : provide board + current player -> that will be the first layer then let the network do magic
+Define the possible actions : tree with every possible move -> alpha beta search min max
+Define the fit function : not sure i need it ?
 
 
