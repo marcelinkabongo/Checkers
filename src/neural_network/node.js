@@ -66,25 +66,6 @@ class Node {
 	}
 
 	activation(x) { //All the possible activation Functions
-		switch (this.activationFunction) {
-			case 0: //Sigmoid
-				return 1 / (1 + Math.pow(Math.E, -4.9 * x));
-				break;
-			case 1: //Identity
-				return x;
-				break;
-			case 2: //Step
-				return x > 0 ? 1 : 0;
-				break;
-			case 3: //Tanh
-				return Math.tanh(x);
-				break;
-			case 4: //ReLu
-				return x < 0 ? 0 : x;
-				break;
-			default: //Sigmoid
-				return 1 / (1 + Math.pow(Math.E, -4.9 * x));
-				break;
-		}
+		return x < 0 ? 0 : x;
 	}
 }

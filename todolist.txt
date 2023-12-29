@@ -12,7 +12,13 @@ change all the functions to be used by computer and not player
 
 
 Define the inputs : provide board + current player -> that will be the first layer then let the network do magic
+    Does the code not add extra layers ? en fait si 
+    next step is to really modify the network
+
 Define the possible actions : tree with every possible move -> alpha beta search min max
+
+
+
 Define the fit function : not sure i need it ? make computer compete with each others
 
 

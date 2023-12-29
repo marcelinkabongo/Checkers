@@ -85,12 +85,13 @@ class Genome {
 			if(node.output) {
 				let partnerNode = partner.nodes[partner.getNode(node.number)];
 				if(Math.random() > 0.5) {
-					node.activationFunction = partnerNode.activationFunction;
+					//node.activationFunction = partnerNode.activationFunction;
 					node.bias = partnerNode.bias;
 				}
 			}
 			offSpring.nodes.push(node);
 		}
+		//kkk doesn't add new layers ?
 
 		//Randomly take connections from this or the partner network
 		let maxLayer = 0;
@@ -184,7 +185,7 @@ class Genome {
 		this.connections.splice(connectionIndex, 1); //Delete the connection
 
 		//Create the new node
-		let newNode = new Node(this.nextNode, pickedConnection.fromNode.layer + 1);
+		let newNode = new Node(this.nextNode, pickedConnection.fromNode.layer + 1); //kkk lets goooo ça les ajoute
 		this.nodes.forEach((node) => { //Shift all nodes layer value
 			if (node.layer > pickedConnection.fromNode.layer)
 				node.layer++;
