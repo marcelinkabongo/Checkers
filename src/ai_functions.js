@@ -121,8 +121,16 @@ function doubleCapture(player, board, position, moves) {
             moves.push(move)
         }
         move[1] = (i + 2 * player, j - 2);
+        capturedPositions = move[2];
+        if (capturedPositions.length > 0) {
+            capturedPosition = capturedPositions.pop();
+            while (capturedPosition[0] * player > (i + player) * player) {
+                capturedPosition = capturedPositions.pop();
+            }
+        }
         capturedPosition = (i + player, j - 1);
-        move[2].push(capturedPosition);
+        capturedPositions.push(capturedPosition);
+        move[2] = capturedPositions;
         moves.push(move);
         moves = doubleCapture(player, board, newPosition2, moves);
     }
