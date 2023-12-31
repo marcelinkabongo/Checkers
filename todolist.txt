@@ -16,6 +16,8 @@ Define the inputs : provide board + current player -> that will be the first lay
     next step is to really modify the network
 
 Define the possible actions : tree with every possible move -> alpha beta search min max
+    create a tree with every board or evaluation
+    create a "match" function
 
 
 

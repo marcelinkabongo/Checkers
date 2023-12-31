@@ -9,6 +9,8 @@ class Genome {
 		this.layers = 2;
 		this.nextNode = 0;
 
+		this.kingValue = 2;
+
 		this.nodes = [];
 		this.connections = [];
 
@@ -126,6 +128,8 @@ class Genome {
 			}
 		}
 
+		offSpring.kingValue = (this.kingValue + partner.kingValue)/2
+
 		offSpring.layers = this.layers;
 		return offSpring;
 	}
@@ -159,9 +163,12 @@ class Genome {
 
 		if (Math.random() < 0.1) { //10%
 			//MOD Node
-			mut = "ModAct";
-			let i = Math.floor(Math.random() * this.nodes.length);
-			this.nodes[i].mutateActivation();
+			//kkk i don't modify activation method, i will modify here the kingValue
+			// mut = "ModAct";
+			// let i = Math.floor(Math.random() * this.nodes.length);
+			// this.nodes[i].mutateActivation();
+			mut = "ModKingValue"
+			this.kingValue = this.kingValue + 0.8*(Math.random() - 0.5);
 		}
 
 		if (Math.random() < 0.05) { //5%
