@@ -12,7 +12,7 @@ class Genome {
 		this.nodes = [];
 		this.connections = [];
 
-		if(!offSpring) { //This is not an offspring genome generate a fullyConnected net
+		if (!offSpring) { //This is not an offspring genome generate a fullyConnected net
 			for (let i = 0; i < this.inputs; i++) {
 				this.nodes.push(new Node(this.nextNode, 0));
 				this.nextNode++;
@@ -80,11 +80,11 @@ class Genome {
 
 
 		//Take all nodes from this parent - output node activation 50%-50%
-		for(let i = 0; i < this.nodes.length; i++){
+		for (let i = 0; i < this.nodes.length; i++) {
 			let node = this.nodes[i].clone();
-			if(node.output) {
+			if (node.output) {
 				let partnerNode = partner.nodes[partner.getNode(node.number)];
-				if(Math.random() > 0.5) {
+				if (Math.random() > 0.5) {
 					//node.activationFunction = partnerNode.activationFunction;
 					node.bias = partnerNode.bias;
 				}
@@ -95,10 +95,10 @@ class Genome {
 
 		//Randomly take connections from this or the partner network
 		let maxLayer = 0;
-		for(let i = 0; i < this.connections.length; i++) {
+		for (let i = 0; i < this.connections.length; i++) {
 			let index = this.commonConnection(this.connections[i].getInnovationNumber(), partner.connections);
 
-			if(index != -1) { //There is a commonConnection
+			if (index != -1) { //There is a commonConnection
 				let conn = Math.random() > 0.5 ? this.connections[i].clone() : partner.connections[index].clone();
 
 				//Reassign nodes
@@ -108,7 +108,7 @@ class Genome {
 				conn.toNode = toNode;
 
 				//Add this connection to the child
-				if(fromNode && toNode)
+				if (fromNode && toNode)
 					offSpring.connections.push(conn);
 			}
 			else { //No common connection -> take from this
@@ -121,7 +121,7 @@ class Genome {
 				conn.toNode = toNode;
 
 				//Add this connection to the child
-				if(fromNode && toNode)
+				if (fromNode && toNode)
 					offSpring.connections.push(conn);
 			}
 		}
@@ -137,7 +137,7 @@ class Genome {
 		//console.log("Mutation...");
 		let mut;
 
-		if(Math.random() < 0.8) { //80%
+		if (Math.random() < 0.8) { //80%
 			//MOD Connections
 			mut = "ModConn";
 			//let i = Math.floor(Math.random() * this.connections.length);
@@ -147,7 +147,7 @@ class Genome {
 			}
 		}
 
-		if(Math.random() < 0.5) { //50%
+		if (Math.random() < 0.5) { //50%
 			//MOD Bias
 			mut = "ModBias";
 			//let i = Math.floor(Math.random() * this.nodes.length);
@@ -157,20 +157,20 @@ class Genome {
 			}
 		}
 
-		if(Math.random() < 0.1) { //10%
+		if (Math.random() < 0.1) { //10%
 			//MOD Node
 			mut = "ModAct";
 			let i = Math.floor(Math.random() * this.nodes.length);
 			this.nodes[i].mutateActivation();
 		}
 
-		if(Math.random() < 0.05) { //5%
+		if (Math.random() < 0.05) { //5%
 			//ADD Connections
 			mut = "AddConn";
 			this.addConnection();
 		}
 
-		if(Math.random() < 0.01) { //1%
+		if (Math.random() < 0.01) { //1%
 			//ADD Node
 			mut = "AddNode";
 			this.addNode();
@@ -209,12 +209,16 @@ class Genome {
 		//Choose to nodes to connect
 		let node1 = Math.floor(Math.random() * this.nodes.length);
 		let node2 = Math.floor(Math.random() * this.nodes.length);
+		let maxIter = 10;
+		let iIter = 0;
 
 		//Search for two valid nodes
-		while (this.nodes[node1].layer == this.nodes[node2].layer
-			|| this.nodesConnected(this.nodes[node1], this.nodes[node2])) {
+		while (abs(this.nodes[node1].layer - this.nodes[node2].layer) != 1
+			|| this.nodesConnected(this.nodes[node1], this.nodes[node2])
+			&& iIter < 10) {
 			node1 = Math.floor(Math.random() * this.nodes.length);
 			node2 = Math.floor(Math.random() * this.nodes.length);
+			iIter++;
 		}
 
 		//Switch nodes based on their layer
@@ -235,8 +239,8 @@ class Genome {
 	commonConnection(innN, connections) {
 		//Search through all connections to check for
 		//one with the correct Innovation Number
-		for(let i = 0; i < connections.length; i++){
-			if(innN == connections[i].getInnovationNumber())
+		for (let i = 0; i < connections.length; i++) {
+			if (innN == connections[i].getInnovationNumber())
 				return i;
 		}
 
@@ -278,7 +282,7 @@ class Genome {
 		return maxConnections == this.connections.length;
 	}
 
-	sortByLayer(){
+	sortByLayer() {
 		//Sort all nodes by layer
 		this.nodes.sort((a, b) => {
 			return a.layer - b.layer;
@@ -293,9 +297,9 @@ class Genome {
 		return clone;
 	}
 
-	getNode(x){ //Returns the index of a node with that Number
-		for(let i = 0; i < this.nodes.length; i++)
-			if(this.nodes[i].number == x)
+	getNode(x) { //Returns the index of a node with that Number
+		for (let i = 0; i < this.nodes.length; i++)
+			if (this.nodes[i].number == x)
 				return i;
 
 		return -1;
@@ -331,16 +335,16 @@ class Genome {
 		let nodes = [];
 		this.nodes.forEach(originalNode => {
 			let node = originalNode.clone();
-			if(node.layer == 0) {
+			if (node.layer == 0) {
 				node.fixed = true;
-				node.y =  height - (height * 0.2);
-				node.x = ((width/this.inputs) * node.number) + (width/this.inputs)/2;
+				node.y = height - (height * 0.2);
+				node.x = ((width / this.inputs) * node.number) + (width / this.inputs) / 2;
 			}
 
-			if(node.output) {
+			if (node.output) {
 				node.fixed = true;
-				node.y =  (height * 0.2);
-				node.x = ((width/this.outputs) * (node.number - this.inputs)) + (width/this.outputs)/2;
+				node.y = (height * 0.2);
+				node.x = ((width / this.outputs) * (node.number - this.inputs)) + (width / this.outputs) / 2;
 			}
 
 			nodes.push(node);
@@ -354,7 +358,7 @@ class Genome {
 			.data(connections)
 			.enter().append("line")
 			.attr("class", "link")
-			.style("stroke-width", function (d) { return d.enabled ? (d.weight > 0 ? 0.3 + d.weight : 0.3 + d.weight*-1) : 0 })
+			.style("stroke-width", function (d) { return d.enabled ? (d.weight > 0 ? 0.3 + d.weight : 0.3 + d.weight * -1) : 0 })
 			.style("stroke", function (d) { return d.weight > 0 ? "#0f0" : "#f00"; });
 
 		var node = svg.selectAll(".node")
@@ -370,7 +374,7 @@ class Genome {
 		node.append("text")
 			.attr("dx", 12)
 			.attr("dy", ".35em")
-			.text(function(d) { return d.number + (d.layer > 0 ? "(" + activationsNames[d.activationFunction] + ")" : null) });
+			.text(function (d) { return d.number + (d.layer > 0 ? "(" + activationsNames[d.activationFunction] + ")" : null) });
 
 		force.on("tick", function () {
 			link.attr("x1", function (d) { return d.source.x; })
