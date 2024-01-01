@@ -232,6 +232,38 @@ function doubleCapture(player, board, position, moves, king = false) {
     return moves;
 }
 
+function boardToInput(board, player, kingValue) {
+    input = new Array(32);
+    indexInput = 0;
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board.length; j++) {
+            if ((i + j) % 2 === 0) {
+                input[indexInput] = board[i][j] * -player / 2;
+                if (abs(input[indexInput]) === 0.5) {
+                    input[indexInput] = input[indexInput] / kingValue;
+                }
+            }
+        }
+    }
+    return input;
+}
+
+function createTree(board, player, depth, seedTree = null) {
+    if (depth === 0) {
+        return new myTree(board);
+    }
+
+    if (seedTree === null) {
+        seedtree = new myTree(board);
+    }
+    moves = findEveryMove(player, board);
+    for (let i = 0; i < moves.length; i++) {
+        newBoard = boardAfterMove(moves, i, player, board);
+        seedTree.addBranch(createTree(newBoard, -player, depth - 1, seedTree = seedTree))
+    }
+    return seedTree;
+
+}
 
 function pickMove(moves, board, player, playerAI, depth) {
 
