@@ -1,3 +1,4 @@
+//Désormais obsolète
 class myTree {
     constructor(initialValue) {
         this.value = initialValue;
@@ -8,5 +9,9 @@ class myTree {
     addBranch(newTree) {
         this.branches.push(newTree)
         this.nbBranches++;
+    }
+
+    isLeaf() {
+        return this.nbBranches === 0;
     }
 }

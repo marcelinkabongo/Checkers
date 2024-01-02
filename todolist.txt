@@ -22,5 +22,6 @@ Define the possible actions : tree with every possible move -> alpha beta search
 
 
 Define the fit function : not sure i need it ? make computer compete with each others
+    that's what i need to do now, c'est la merde
 
 

@@ -233,38 +233,71 @@ function doubleCapture(player, board, position, moves, king = false) {
 }
 
 function boardToInput(board, player, kingValue) {
-    input = new Array(32);
+    input = new Array(34);
     indexInput = 0;
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if ((i + j) % 2 === 0) {
-                input[indexInput] = board[i][j] * -player / 2;
+                input[indexInput] = board[i][j] / 2;
                 if (abs(input[indexInput]) === 0.5) {
                     input[indexInput] = input[indexInput] / kingValue;
                 }
             }
         }
     }
+    nbMoves = findEveryMove(player, board).length;
+    input[32] = player;
+    input[33] = nbMoves/64; //arbitrary to have smth between 0 and 1
     return input;
 }
 
-function createTree(board, player, depth, seedTree = null) {
+function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
+    //use seedTree = null when you create the first tree
+    //use alpha = -Infinity
+    //use beta = +Infinity
+    //depth = 2n
+    brain = playerAI.brain;
     if (depth === 0) {
-        return new myTree(board);
-    }
-
-    if (seedTree === null) {
-        seedtree = new myTree(board);
+        input = boardToInput(board, player, brain.kingValue);
+        eval = brain.feedForward(input);
+        return (eval, -1);
     }
     moves = findEveryMove(player, board);
-    for (let i = 0; i < moves.length; i++) {
-        newBoard = boardAfterMove(moves, i, player, board);
-        seedTree.addBranch(createTree(newBoard, -player, depth - 1, seedTree = seedTree))
+    index = 0;
+    if (isMaximising) {
+        bestVal = -Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            newBoard = boardAfterMove(moves, i, player, board);
+            result = createTree(newBoard, -player, playerAI, depth - 1, alpha, beta, false);
+            eval = result[0];
+            index = result[1];
+            if (eval > bestVal) {
+                bestVal = eval;
+                index = i;
+            }
+            alpha = Math.max(bestVal, alpha);
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        return (bestVal, index);
     }
-    return seedTree;
-
-}
-
-function pickMove(moves, board, player, playerAI, depth) {
-
+    else {
+        minVal = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            newBoard = boardAfterMove(moves, i, player, board);
+            result = createTree(newBoard, -player, playerAI, depth - 1, alpha, beta, true);
+            eval = result[0];
+            index = result[1];
+            if (eval < minVal) {
+                bestVal = eval;
+                index = i;
+            }
+            beta = Math.min(minVal, beta);
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        return (minVal, index);
+    }
 }

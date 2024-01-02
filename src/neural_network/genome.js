@@ -61,6 +61,9 @@ class Genome {
 		//asin new inputs
 		for (let i = 0; i < this.inputs; i++)
 			this.nodes[i].outputValue = inputValues[i];
+		if (inputValues[33] === 0) {
+			return Infinity*inputValues[32];
+		}
 
 		//Engage all nodes and Extract the results from the outputs
 		let result = [];
