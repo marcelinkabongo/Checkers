@@ -324,20 +324,21 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
         [1, 0, 1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1, 0, 1],
     ];
-    let player = (-1, 1);
+    let playerArray = (-1, 1);
     let playerAI = (playerWhite, playerBlack);
     let isMaximising = (true, false);
     let indexPlayer = 0;
     let nbMovesPlayed = 0;
     let value; let indexMove; let moves;
-    console.log(isThereAMove(player[indexPlayer], board));
-    while (isThereAMove(player[indexPlayer], board) && nbMovesPlayed < 500) {
-        value, indexMove, moves = pickMove(board, player[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
+    console.log(playerArray.length);
+    console.log(isThereAMove(playerArray[indexPlayer], board));
+    while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
+        value, indexMove, moves = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
         console.log(value);
         if (indexMove === -1 || moves === null) {
             throw new Error("Error in pickMove");
         }
-        board = boardAfterMove(moves, indexMove, player[indexPlayer], board);
+        board = boardAfterMove(moves, indexMove, playerArray[indexPlayer], board);
         indexPlayer = (indexPlayer + 1) % 2;
         nbMovesPlayed++;
         builBoard(board);
