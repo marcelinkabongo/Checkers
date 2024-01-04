@@ -153,6 +153,7 @@ function isThereAMove(playerPlusMinus, board) {
 function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
     let oldPosition = moves[indexMove][0];
     let newPosition = moves[indexMove][1];
+    console.log(moves[indexMove]);
     board[newPosition[0]][newPosition[1]] = board[oldPosition[0]][oldPosition[1]];
     board[oldPosition[0]][oldPosition[1]] = 0;
     if (playerPlusMinus === -1) { //white
@@ -302,10 +303,6 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
     if (depth === 0) {
         let input = boardToInput(board, playerPlusMinus, brain.kingValue);
         let evaluation = brain.feedForward(input);
-        if (evaluation === Infinity || evaluation === -Infinity) {
-            console.log("Infinity at depth " + depth);
-        }
-        //console.log("the evaluation is " + evaluation)
         return [evaluation, -1, null];
     }
     let moves = findEveryMove(playerPlusMinus, board);
@@ -320,28 +317,17 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
             let result = pickMove(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, false);
             evaluation = result[0];
             evaluationArray[i] = evaluation;
-            //console.log("evaluation in is maximising " + evaluation);
-            if (evaluation === Infinity) {
-                console.log("Infinity at depth " + depth + " " + evaluation + " is maximising ? " + isMaximising);
-            }
-            //console.log("BestVal before modification is " + bestVal);
             if (evaluation > bestVal) {
                 bestVal = evaluation;
                 index = i;
                 alpha = Math.max(bestVal, alpha);
                 hasBeenModified = true;
-                // console.log("the new index is " + index + " which is equal to " + i);
-                // console.log("the new bestVal is " + bestVal + " which is equal to " + evaluation);
-            }
-            else {
-                // console.log("some lower eval " + evaluation);
             }
             if (beta <= alpha) {
                 // console.log("alpha beta pruning, new alpha = " + alpha);
                 break;
             }
         }
-        //console.log("the chosen index is " + index);
 
         if (moves.length === 0) {
             console.log("there is no moves");
@@ -350,12 +336,6 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
             bestVal = evaluation;
             index = -1;
         }
-        if (!hasBeenModified) {
-            console.log("Has been modified before return : " + hasBeenModified);
-            console.log(evaluationArray);
-        }
-        console.log("return in the is maximising is :");
-        console.log([bestVal, index, moves]);
         return [bestVal, index, moves];
     }
     else {
@@ -364,11 +344,6 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
             let newBoard = boardAfterMove(moves, i, playerPlusMinus, board);
             let result = pickMove(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, true);
             evaluation = result[0];
-            //console.log("evaluation in is not maximising " + evaluation);
-            if (evaluation === -Infinity) {
-                console.log("Infinity at depth " + depth + " is maximising ? " + isMaximising);
-            }
-            //console.log("MinVal before modification is " + minVal);
             if (evaluation < minVal) {
                 minVal = evaluation;
                 index = i;
@@ -387,10 +362,6 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
             minVal = evaluation;
             hasBeenModified = true;
             index = -1;
-        }
-        if (!hasBeenModified) {
-            console.log("Has been modified before return : " + hasBeenModified);
-            console.log(evaluationArray);
         }
         return [minVal, index, moves];
     }
@@ -416,18 +387,24 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let value = 0;
     let indexMove = 0;
     let moves = [];
+    let result = [];
     builBoard(board);
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
         console.log("number of moves played is " + nbMovesPlayed);
-        value, indexMove, moves = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
+        result = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
+        value = result[0];
+        indexMove = result[1];
+        moves = result[2];
         console.log("index move is " + indexMove);
         console.log("the value of the move chosen " + value);
+        console.log(moves);
         if (indexMove === -1 || moves === null) {
             console.log("c'est la merdeee");
             throw new Error("Error in pickMove");
         }
         board = boardAfterMove(moves, indexMove, playerArray[indexPlayer], board);
         indexPlayer = (indexPlayer + 1) % 2;
+        console.log("the new indexPlayer is " + indexPlayer);
         nbMovesPlayed++;
         builBoard(board);
     }
