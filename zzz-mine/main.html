@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Checkers</title>
+    <link rel="stylesheet" href="checkers-game-js-main/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="next-player counter">
+            <div class="occupied whitePiece" id="next-player"></div>
+            Player
+        </div>
+        <div class="game" id="game"></div>
+        <div class="counter">
+            <div>
+                <div class="occupied whitePiece"></div>
+                <span id="white-player-count-pieces">10</span>
+            </div>
+            <div>
+                <div class="occupied blackPiece"></div>
+                <span id="black-player-count-pieces">10</span>
+            </div>
+        </div>
+    </div>
+    <script src="src/functions.js"></script>
+    <script src="src/checkers.js"></script>
+</body>
+
+</html>

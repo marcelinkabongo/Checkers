@@ -122,11 +122,28 @@ function findEveryMove(player, board) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j] * player < 0) {
                 // careful with the sign of player, always a pain in the ass
-                moves, capturePossible = markPossibleMoves(i, j, -player, board, moves, capturePossible);
+                moves, capturePossible = markPossibleMoves(i, j, player, board, moves, capturePossible);
             }
         }
     }
     return moves
+}
+
+function isThereAMove(player, board) {
+    let moves = [];
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board.length; j++) {
+            if (board[i][j] * player < 0) {
+                // careful with the sign of player, always a pain in the ass
+                moves, capturePossible = markPossibleMoves(i, j, player, board, moves, capturePossible);
+                if (moves.length > 0) {
+                    return true;
+                }
+            }
+
+        }
+    }
+    return false;
 }
 
 function boardAfterMove(moves, indexMove, player, board) {
@@ -247,7 +264,7 @@ function boardToInput(board, player, kingValue) {
     }
     nbMoves = findEveryMove(player, board).length;
     input[32] = player;
-    input[33] = nbMoves/64; //arbitrary to have smth between 0 and 1
+    input[33] = nbMoves / 64; //arbitrary to have smth between 0 and 1
     return input;
 }
 
@@ -260,7 +277,7 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
     if (depth === 0) {
         input = boardToInput(board, player, brain.kingValue);
         eval = brain.feedForward(input);
-        return (eval, -1);
+        return (eval, -1, null);
     }
     moves = findEveryMove(player, board);
     index = 0;
@@ -280,7 +297,7 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
                 break;
             }
         }
-        return (bestVal, index);
+        return (bestVal, index, moves);
     }
     else {
         minVal = Infinity;
@@ -298,6 +315,68 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
                 break;
             }
         }
-        return (minVal, index);
+        return (minVal, index, moves);
     }
 }
+
+
+
+function game(playerWhite, playerBlack, depth = 4) {
+    board = [
+        [-1, 0, -1, 0, -1, 0, -1, 0],
+        [0, -1, 0, -1, 0, -1, 0, -1],
+        [-1, 0, -1, 0, -1, 0, -1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1],
+    ];
+    player = (-1, 1);
+    playerAI = (playerWhite, playerBlack);
+    isMaximising = (true, false);
+    indexPlayer = 0;
+    nbMovesPlayed = 0;
+    while (isThereAMove(player[indexPlayer], board) && nbMovesPlayed < 500) {
+        value, indexMove, moves = pickMove(board, player[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
+        if (indexMove === -1 || moves === null) {
+            throw new Error("Error in pickMove");
+        }
+        board = boardAfterMove(moves, indexMove, player[indexPlayer], board);
+        indexPlayer = (indexPlayer + 1) % 2;
+        nbMovesPlayed++;
+    }
+    if (nbMovesPlayed === 500) {
+        playerWhite.score += 1;
+        playerBlack.score += 1;
+    }
+    else {
+        playerAI[indexPlayer].score += 3;
+    }
+}
+
+function organizeGames(players) {
+    const numberOfPlayers = players.length;
+
+    // Ensure the number of players is even for pairings
+    if (numberOfPlayers % 2 !== 0) {
+        throw new Error('The number of players must be even.');
+    }
+
+    const games = [];
+
+    for (let i = 0; i < numberOfPlayers - 1; i++) {
+        for (let j = i + 1; j < numberOfPlayers; j++) {
+            const playerWhite = players[i];
+            const playerBlack = players[j];
+
+            // Create two games, one with playerWhite as white, and the other with playerBlack as white
+            const game1 = (i, j);
+            const game2 = (j, i);
+
+            games.push(game1, game2);
+        }
+    }
+    return games;
+}
+
