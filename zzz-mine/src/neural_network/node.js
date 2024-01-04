@@ -26,12 +26,20 @@ class Node {
 		});
 	}
 
+	randomGaussian(mean = 0, stdev = 1) {
+		const u = 1 - Math.random(); // Converting [0,1) to (0,1]
+		const v = Math.random();
+		const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+		// Transform to the desired mean and standard deviation:
+		return z * stdev + mean;
+	}
+
 	mutateBias() { //Randomly mutate the bias of this node
 		let rand = Math.random();
 		if (rand < 0.05) //5% chance of being assigned a new random value
 			this.bias = Math.random() * 2 - 1;
 		else //95% chance of being uniformly perturbed
-			this.bias += randomGaussian() / 50;
+			this.bias += this.randomGaussian() / 50;
 	}
 
 	mutateActivation() { //Randomly choose a new activationFunction

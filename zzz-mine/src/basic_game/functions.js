@@ -4,7 +4,7 @@ function builBoard() {
   white = 0;
   noPossibleMoves = true;
   PossibleCapture = false;
-  
+
 
   for (let i = 0; i < board.length; i++) {
     const element = board[i];
@@ -240,7 +240,7 @@ function movePiece(e) {
   if (doubleCapture) {
     if (!p.compare(doubleCapturePiece)) {
       console.log("Double capture mannnnn")
-    } else{
+    } else {
       findPossibleNewPositionCapture(doubleCapturePiece, -currentPlayer);
       doubleCapture = false;
       console.log(newPiecesPositionsCapture);
@@ -259,7 +259,7 @@ function movePiece(e) {
     findPossibleNewPositionCapture(p, -currentPlayer);
   }
 
-  
+
 
   else if (newPiecesPositions.length > 0 && !PossibleCapture) {
     enableToMove(p, 0);
