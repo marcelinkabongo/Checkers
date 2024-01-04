@@ -27,7 +27,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         moves = doubleCapture(playerPlusMinus, board, newPosition, moves);
     }
 
-    if (abs(board[i][j]) === 2) {
+    if (Math.abs(board[i][j]) === 2) {
         let onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
         let onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
         capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
@@ -248,7 +248,7 @@ function boardToInput(board, playerPlusMinus, kingValue) {
         for (let j = 0; j < board.length; j++) {
             if ((i + j) % 2 === 0) {
                 input[indexInput] = board[i][j] / 2;
-                if (abs(input[indexInput]) === 0.5) {
+                if (Math.abs(input[indexInput]) === 0.5) {
                     input[indexInput] = input[indexInput] / kingValue;
                 }
             }
@@ -330,7 +330,7 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let indexPlayer = 0;
     let nbMovesPlayed = 0;
     let value; let indexMove; let moves;
-    console.log(playerArray.length);
+    console.log(playerArray);
     console.log(isThereAMove(playerArray[indexPlayer], board));
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
         value, indexMove, moves = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);

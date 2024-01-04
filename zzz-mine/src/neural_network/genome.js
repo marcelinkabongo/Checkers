@@ -223,7 +223,7 @@ class Genome {
 		let iIter = 0;
 
 		//Search for two valid nodes
-		while (abs(this.nodes[node1].layer - this.nodes[node2].layer) != 1
+		while (Math.abs(this.nodes[node1].layer - this.nodes[node2].layer) != 1
 			|| this.nodesConnected(this.nodes[node1], this.nodes[node2])
 			&& iIter < 10) {
 			node1 = Math.floor(Math.random() * this.nodes.length);
