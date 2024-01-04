@@ -1,12 +1,12 @@
 //import { organizeGames, gameBetweenAI } from "./ai_functions";
 
+const modal = document.getElementById("easyModal");
+let game = document.getElementById("game");
+
 let pop = new Population(64);
 let players = pop.population;
 
 let gamesList = organizeGames(players);
-
-const modal = document.getElementById("easyModal");
-let game = document.getElementById("game");
 
 for (let i = 0; i < gamesList.length; i++) {
     if (i === 0) {

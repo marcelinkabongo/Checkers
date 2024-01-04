@@ -416,6 +416,7 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let value = 0;
     let indexMove = 0;
     let moves = [];
+    builBoard(board);
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
         console.log("number of moves played is " + nbMovesPlayed);
         value, indexMove, moves = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
@@ -465,60 +466,76 @@ function organizeGames(players) {
     return games;
 }
 
-function builBoard(board) {
+function builBoard(boardGiven) {
     game.innerHTML = "";
-    let black = 0;
-    let white = 0;
-
-    for (let i = 0; i < board.length; i++) {
-        const element = board[i];
-        let row = document.createElement("div"); // create div for each row
-        row.setAttribute("class", "row");
-
-        for (let j = 0; j < element.length; j++) {
-            const elmt = element[j];
-            let col = document.createElement("div");
-            let piece = document.createElement("div");
-            let caseType = "";
-            let occupied = "";
-
-            if (i % 2 === 0) {
-                if (j % 2 === 0) {
-                    caseType = "Whitecase";
-                } else {
-                    caseType = "blackCase";
-                }
-            } else {
-                if (j % 2 !== 0) {
-                    caseType = "Whitecase";
-                } else {
-                    caseType = "blackCase";
-                }
-            }
-
-            // add the piece if the case isn't empty
-            if (board[i][j] > 0) {
-                occupied = "whitePiece";
-                white++;
-            } else if (board[i][j] < 0) {
-                occupied = "blackPiece";
-                black++;
-            } else {
-                occupied = "empty";
-            }
-
-
-
-            col.setAttribute("class", "column " + caseType);
-            row.appendChild(col);
-
+    black = 0;
+    white = 0;
+  
+  
+    for (let i = 0; i < boardGiven.length; i++) {
+      const element = boardGiven[i];
+      let row = document.createElement("div"); // create div for each row
+      row.setAttribute("class", "row");
+  
+      for (let j = 0; j < element.length; j++) {
+        const elmt = element[j];
+        let col = document.createElement("div");
+        let piece = document.createElement("div");
+        let caseType = "";
+        let occupied = "";
+  
+        if (i % 2 === 0) {
+          if (j % 2 === 0) {
+            caseType = "Whitecase";
+          } else {
+            caseType = "blackCase";
+          }
+        } else {
+          if (j % 2 !== 0) {
+            caseType = "Whitecase";
+          } else {
+            caseType = "blackCase";
+          }
         }
-
-        game.appendChild(row);
+  
+        // add the piece if the case isn't empty
+        if (boardGiven[i][j] === 1) {
+          occupied = "whitePiece";
+          white++;
+        } else if (boardGiven[i][j] === -1) {
+          occupied = "blackPiece";
+          black++;
+        } else {
+          occupied = "empty";
+        }
+  
+  
+        piece.setAttribute("class", "occupied " + occupied);
+  
+        // set row and colum in the case
+        piece.setAttribute("row", i);
+        piece.setAttribute("column", j);
+        piece.setAttribute("data-position", i + "-" + j);
+  
+        col.appendChild(piece);
+  
+        col.setAttribute("class", "column " + caseType);
+        row.appendChild(col);
+  
+      }
+  
+      game.appendChild(row);
     }
-    //display the number of piece for each player
+
     displayCounter(black, white);
-}
+  }
+  
+  function displayCounter(black, white) {
+    var blackContainer = document.getElementById("black-player-count-pieces");
+    var whiteContainer = document.getElementById("white-player-count-pieces");
+    blackContainer.innerHTML = black;
+    whiteContainer.innerHTML = white;
+  }
 
 function displayCounter(black, white) {
     let blackContainer = document.getElementById("black-player-count-pieces");

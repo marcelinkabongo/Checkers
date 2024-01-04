@@ -2,8 +2,8 @@ function builBoard() {
   game.innerHTML = "";
   black = 0;
   white = 0;
-  noPossibleMoves = true;
-  PossibleCapture = false;
+  // noPossibleMoves = true;
+  // PossibleCapture = false;
 
 
   for (let i = 0; i < board.length; i++) {
@@ -50,20 +50,20 @@ function builBoard() {
       piece.setAttribute("row", i);
       piece.setAttribute("column", j);
       piece.setAttribute("data-position", i + "-" + j);
-      if (currentPlayer === board[i][j]) {
-        // -currentPlayer when using other function
-        p = new Piece(i, j);
-        if (noPossibleMoves && findPossibleNewPosition(p, -currentPlayer)) {
-          noPossibleMoves = false;
-        }
+      // if (currentPlayer === board[i][j]) {
+      //   // -currentPlayer when using other function
+      //   p = new Piece(i, j);
+      //   if (noPossibleMoves && findPossibleNewPosition(p, -currentPlayer)) {
+      //     noPossibleMoves = false;
+      //   }
 
-        if (!PossibleCapture && findPossibleNewPositionCapture(p, -currentPlayer)) {
-          PossibleCapture = true;
-        }
-      }
+      //   if (!PossibleCapture && findPossibleNewPositionCapture(p, -currentPlayer)) {
+      //     PossibleCapture = true;
+      //   }
+      // }
 
       //add event listener to each piece
-      piece.addEventListener("click", movePiece);
+      //piece.addEventListener("click", movePiece);
 
       col.appendChild(piece);
 
