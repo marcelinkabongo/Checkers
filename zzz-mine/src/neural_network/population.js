@@ -1,10 +1,12 @@
-let genomeInputsN = 2;
+let genomeInputsN = 34;
 let genomeOutputN = 1;
 let showBest = true;
 
 //The Population Class
 //Here is where the power of all the classes
 //comes together to destroy the game score records
+
+//I will only use natural selection, no need for update alive or done
 class Population{
 	constructor(size){
 		this.population = [];
@@ -108,7 +110,7 @@ class Population{
 	fillMatingPool(){
 		this.matingPool.splice(0, this.matingPool.length);
 		this.population.forEach((element, elementN) => { 
-			let n = element.fitness * 100;
+			let n = element.fitness * 100; 
 			for(let i = 0; i < n; i++)
 				this.matingPool.push(elementN);
 		});

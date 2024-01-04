@@ -1,26 +1,3 @@
-let currentPlayer = 1;
-let newPiecesPositions = [];
-let newPiecesPositionsCapture = [];
-
-let noPossibleMoves = true;
-let PossibleCapture = false;
-let doubleCapture = false;
-let doubleCapturePiece = new Piece(-1, -1);
-let winnerPlayer = 0;
-let black = 0;
-let white = 0;
-
-let board = [
-    [-1, 0, -1, 0, -1, 0, -1, 0],
-    [0, -1, 0, -1, 0, -1, 0, -1],
-    [-1, 0, -1, 0, -1, 0, -1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 0],
-    [0, 1, 0, 1, 0, 1, 0, 1],
-];
-
 function markPossibleMoves(i, j, player, board, moves, capturePossible) {
     let onBoard1 = (i + 2 * player) >= 0 && (i + 2 * player) < board.length && (j + 2) < board.length;
     let onBoard2 = (i + 2 * player) >= 0 && (i + 2 * player) < board.length && (j - 2) < board.length;
@@ -276,8 +253,8 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
     brain = playerAI.brain;
     if (depth === 0) {
         input = boardToInput(board, player, brain.kingValue);
-        eval = brain.feedForward(input);
-        return (eval, -1, null);
+        evaluation = brain.feedForward(input);
+        return (evaluation, -1, null);
     }
     moves = findEveryMove(player, board);
     index = 0;
@@ -286,10 +263,10 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
         for (let i = 0; i < moves.length; i++) {
             newBoard = boardAfterMove(moves, i, player, board);
             result = createTree(newBoard, -player, playerAI, depth - 1, alpha, beta, false);
-            eval = result[0];
+            evaluation = result[0];
             index = result[1];
-            if (eval > bestVal) {
-                bestVal = eval;
+            if (evaluation > bestVal) {
+                bestVal = evaluation;
                 index = i;
             }
             alpha = Math.max(bestVal, alpha);
@@ -304,10 +281,10 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
         for (let i = 0; i < moves.length; i++) {
             newBoard = boardAfterMove(moves, i, player, board);
             result = createTree(newBoard, -player, playerAI, depth - 1, alpha, beta, true);
-            eval = result[0];
+            evaluation = result[0];
             index = result[1];
-            if (eval < minVal) {
-                bestVal = eval;
+            if (evaluation < minVal) {
+                bestVal = evaluation;
                 index = i;
             }
             beta = Math.min(minVal, beta);
@@ -321,7 +298,7 @@ function pickMove(board, player, playerAI, depth, alpha, beta, isMaximising) {
 
 
 
-function game(playerWhite, playerBlack, depth = 4) {
+function game(playerWhite, playerBlack, depth = 4, showGame = false) {
     board = [
         [-1, 0, -1, 0, -1, 0, -1, 0],
         [0, -1, 0, -1, 0, -1, 0, -1],
@@ -345,6 +322,7 @@ function game(playerWhite, playerBlack, depth = 4) {
         board = boardAfterMove(moves, indexMove, player[indexPlayer], board);
         indexPlayer = (indexPlayer + 1) % 2;
         nbMovesPlayed++;
+        builBoard(board);
     }
     if (nbMovesPlayed === 500) {
         playerWhite.score += 1;
@@ -380,3 +358,66 @@ function organizeGames(players) {
     return games;
 }
 
+function builBoard(board) {
+    game.innerHTML = "";
+    black = 0;
+    white = 0;
+
+    for (let i = 0; i < board.length; i++) {
+        const element = board[i];
+        let row = document.createElement("div"); // create div for each row
+        row.setAttribute("class", "row");
+
+        for (let j = 0; j < element.length; j++) {
+            const elmt = element[j];
+            let col = document.createElement("div");
+            let piece = document.createElement("div");
+            let caseType = "";
+            let occupied = "";
+
+            if (i % 2 === 0) {
+                if (j % 2 === 0) {
+                    caseType = "Whitecase";
+                } else {
+                    caseType = "blackCase";
+                }
+            } else {
+                if (j % 2 !== 0) {
+                    caseType = "Whitecase";
+                } else {
+                    caseType = "blackCase";
+                }
+            }
+
+            // add the piece if the case isn't empty
+            if (board[i][j] > 0) {
+                occupied = "whitePiece";
+                white++;
+            } else if (board[i][j] < 0) {
+                occupied = "blackPiece";
+                black++;
+            } else {
+                occupied = "empty";
+            }
+
+
+
+            col.setAttribute("class", "column " + caseType);
+            row.appendChild(col);
+
+        }
+
+        game.appendChild(row);
+    }
+    //display the number of piece for each player
+    displayCounter(black, white);
+}
+
+function displayCounter(black, white) {
+    var blackContainer = document.getElementById("black-player-count-pieces");
+    var whiteContainer = document.getElementById("white-player-count-pieces");
+    blackContainer.innerHTML = black;
+    whiteContainer.innerHTML = white;
+}
+
+export { organizeGames, game };
