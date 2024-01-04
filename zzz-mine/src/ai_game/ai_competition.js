@@ -10,7 +10,7 @@ let game = document.getElementById("game");
 
 for (let i = 0; i < gamesList.length; i++) {
     if (i === 0) {
-        gameBetweenAI(players[gamesList[i][0]], players[gamesList[i][1]], showGame = true);
+        gameBetweenAI(players[gamesList[i][0]], players[gamesList[i][1]], depth = 4, showGame = true);
     }
     else {
         gameBetweenAI(gamesList[i][0], gamesList[i][1]);

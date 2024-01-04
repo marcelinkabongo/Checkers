@@ -62,6 +62,7 @@ class Genome {
 		for (let i = 0; i < this.inputs; i++)
 			this.nodes[i].outputValue = inputValues[i];
 		if (inputValues[33] === 0) {
+			console.log("Player " + inputValues[32] + " has no moves");
 			return Infinity*inputValues[32];
 		}
 
@@ -70,8 +71,12 @@ class Genome {
 		this.nodes.forEach((node) => {
 			node.engage();
 
-			if (node.output)
+			if (node.output){
+				if (Math.abs(node.outputValue) === Infinity) {
+					console.log("the neural network produces infinity -> look at the proof " + node.outputValue)
+				}
 				result.push(node.outputValue);
+			}
 		});
 		return result;
 	}

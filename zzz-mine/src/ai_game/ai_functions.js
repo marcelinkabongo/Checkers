@@ -1,10 +1,14 @@
 function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible) {
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
-    let capturable = board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
     let newPosition;
     let capturedPosition;
     let oldPosition;
+
+    let capturable = false;
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < board.length && (j + 1) < board.length && (j + 1) >= 0) {
+        capturable = board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+    }
 
     if (onBoard1 && board[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
         newPosition = [i + 2 * playerPlusMinus, j + 2];
@@ -16,7 +20,10 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         moves = doubleCapture(playerPlusMinus, board, newPosition, moves);
     }
 
-    capturable = board[i + playerPlusMinus][j - 1] === playerPlusMinus || board[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
+    capturable = false;
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < board.length && (j - 1) < board.length && (j - 1) >= 0) {
+        capturable = board[i + playerPlusMinus][j - 1] === playerPlusMinus || board[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
+    }
     if (onBoard2 && board[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
         newPosition = [i + 2 * playerPlusMinus, j - 2];
         oldPosition = [i, j];
@@ -30,7 +37,11 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
     if (Math.abs(board[i][j]) === 2) {
         let onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
         let onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
-        capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+
+        capturable = false;
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < board.length && (j + 1) < board.length && (j + 1) >= 0) {
+            capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+        }
 
         if (onBoard1 && board[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
             newPosition = [i - 2 * playerPlusMinus, j + 2];
@@ -41,7 +52,11 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             capturePossible = true;
             moves = doubleCapture(playerPlusMinus, board, newPosition, moves, king = true);
         }
-        capturable = board[i - playerPlusMinus][j - 1] === playerPlusMinus || board[i - playerPlusMinus][j - 1] === playerPlusMinus * 2;
+
+        capturable = false;
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < board.length && (j - 1) < board.length && (j - 1) >= 0) {
+            capturable = board[i - playerPlusMinus][j - 1] === playerPlusMinus || board[i - playerPlusMinus][j - 1] === playerPlusMinus * 2;
+        }
 
         if (onBoard2 && board[i - 2 * playerPlusMinus][j - 2] === 0 && capturable) {
             newPosition = [i - 2 * playerPlusMinus, j - 2];
@@ -95,7 +110,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         }
     }
 
-    return moves, capturePossible;
+    return [moves, capturePossible];
 }
 
 
@@ -106,7 +121,9 @@ function findEveryMove(playerPlusMinus, board) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j] * playerPlusMinus < 0) {
                 // careful with the sign of playerPlusMinus, always a pain in the ass
-                moves, capturePossible = markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible);
+                let result = markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible);
+                moves = result[0];
+                capturePossible = result[1];
             }
         }
     }
@@ -116,14 +133,12 @@ function findEveryMove(playerPlusMinus, board) {
 function isThereAMove(playerPlusMinus, board) {
     let moves = [];
     let capturePossible = false;
-    console.log(playerPlusMinus);
-    console.log(board);
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j] * playerPlusMinus < 0) {
                 // careful with the sign of playerPlusMinus, always a pain in the ass
-                console.log("I'm here");
-                moves, capturePossible = markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible);
+                let result = markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible);
+                moves = result[0];
                 if (moves.length > 0) {
                     return true;
                 }
@@ -160,10 +175,13 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
     let i = position[0];
     let j = position[1];
     let move;
-    let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
-    let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
+    let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j + 2) < board.length && (j + 2) >= 0;
+    let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j - 2) < board.length && (j - 2) >= 0;
     let leftPossible = false;
-    let capturable = board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+    let capturable = false;
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < board.length && (j + 1) < board.length && (j + 1) >= 0) {
+        capturable = (board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus);
+    }
     if (onBoard1 && board[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
         let newPosition1 = [i + 2 * playerPlusMinus, j + 2];
         move = moves.pop();
@@ -175,8 +193,11 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         leftPossible = true;
     }
 
+    capturable = false;
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < board.length && (j - 1) < board.length && (j - 1) >= 0) {
+        capturable = board[i + playerPlusMinus][j - 1] === playerPlusMinus || board[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
+    }
 
-    capturable = board[i + playerPlusMinus][j - 1] === playerPlusMinus || board[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
     if (onBoard2 && board[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
         move = moves.pop();
         if (leftPossible) {
@@ -202,7 +223,11 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
         onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
         let leftPossible = false;
-        capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+
+        capturable = false;
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < board.length && (j + 1) < board.length && (j + 1) >= 0) {
+            capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+        }
 
         if (onBoard1 && board[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
             let newPosition1 = [i - 2 * playerPlusMinus, j - 2];
@@ -215,7 +240,11 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
             leftPossible = true;
         }
 
-        capturable = board[i - playerPlusMinus][j - 1] === playerPlusMinus || board[i - playerPlusMinus][j - 1] === 2 * playerPlusMinus;
+        capturable = false;
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < board.length && (j - 1) < board.length && (j - 1) >= 0) {
+            capturable = board[i - playerPlusMinus][j - 1] === playerPlusMinus || board[i - playerPlusMinus][j - 1] === 2 * playerPlusMinus;
+        }
+
         if (onBoard2 && board[i - 2 * playerPlusMinus][j - 2] === 0 && capturable) {
             move = moves.pop();
             if (leftPossible) {
@@ -242,8 +271,8 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
 }
 
 function boardToInput(board, playerPlusMinus, kingValue) {
-    input = new Array(34);
-    indexInput = 0;
+    let input = new Array(34);
+    let indexInput = 0;
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if ((i + j) % 2 === 0) {
@@ -251,10 +280,11 @@ function boardToInput(board, playerPlusMinus, kingValue) {
                 if (Math.abs(input[indexInput]) === 0.5) {
                     input[indexInput] = input[indexInput] / kingValue;
                 }
+                indexInput++;
             }
         }
     }
-    nbMoves = findEveryMove(playerPlusMinus, board).length;
+    let nbMoves = findEveryMove(playerPlusMinus, board).length;
     input[32] = playerPlusMinus;
     input[33] = nbMoves / 64; //arbitrary to have smth between 0 and 1
     return input;
@@ -267,47 +297,57 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
     //depth = 2n
     let brain = playerAI.brain;
     if (depth === 0) {
-        input = boardToInput(board, playerPlusMinus, brain.kingValue);
-        evaluation = brain.feedForward(input);
-        return (evaluation, -1, null);
+        let input = boardToInput(board, playerPlusMinus, brain.kingValue);
+        let evaluation = brain.feedForward(input);
+        console.log("the evaluation is " + evaluation)
+        return [evaluation, -1, null];
     }
-    moves = findEveryMove(playerPlusMinus, board);
-    index = 0;
+    let moves = findEveryMove(playerPlusMinus, board);
+    let index = 0;
     if (isMaximising) {
         bestVal = -Infinity;
         for (let i = 0; i < moves.length; i++) {
-            newBoard = boardAfterMove(moves, i, playerPlusMinus, board);
-            result = createTree(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, false);
-            evaluation = result[0];
-            index = result[1];
+            let newBoard = boardAfterMove(moves, i, playerPlusMinus, board);
+            let result = pickMove(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, false);
+            let evaluation = result[0];
             if (evaluation > bestVal) {
+                console.log("hehehe");
                 bestVal = evaluation;
                 index = i;
+                alpha = Math.max(bestVal, alpha);
+                console.log("the new index is " + index + " which is equal to " + i);
+                console.log("the new bestVal is " + bestVal + " which is equal to " + evaluation);
             }
-            alpha = Math.max(bestVal, alpha);
+            else {
+                console.log("some lower eval " + evaluation);
+            }
+
+            console.log(alpha);
             if (beta <= alpha) {
+                console.log("alpha beta pruning, new alpha = " + alpha);
                 break;
             }
         }
-        return (bestVal, index, moves);
+        //console.log("the chosen index is " + index);
+        return [bestVal, index, moves];
     }
     else {
         minVal = Infinity;
         for (let i = 0; i < moves.length; i++) {
             newBoard = boardAfterMove(moves, i, playerPlusMinus, board);
-            result = createTree(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, true);
+            result = pickMove(newBoard, -playerPlusMinus, playerAI, depth - 1, alpha, beta, true);
             evaluation = result[0];
-            index = result[1];
             if (evaluation < minVal) {
-                bestVal = evaluation;
+                minVal = evaluation;
                 index = i;
+                beta = Math.min(minVal, beta);
             }
-            beta = Math.min(minVal, beta);
             if (beta <= alpha) {
+                console.log("alpha beta pruning, new beta = " + beta);
                 break;
             }
         }
-        return (minVal, index, moves);
+        return [minVal, index, moves];
     }
 }
 
@@ -330,12 +370,12 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let indexPlayer = 0;
     let nbMovesPlayed = 0;
     let value; let indexMove; let moves;
-    console.log(playerArray);
-    console.log(isThereAMove(playerArray[indexPlayer], board));
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
+        console.log("number of moves played is " + nbMovesPlayed);
         value, indexMove, moves = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
-        console.log(value);
+        console.log("index move is " + indexMove);
         if (indexMove === -1 || moves === null) {
+            console.log("c'est la merdeee");
             throw new Error("Error in pickMove");
         }
         board = boardAfterMove(moves, indexMove, playerArray[indexPlayer], board);
@@ -348,7 +388,7 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
         playerBlack.addScore(1);
     }
     else {
-        console.log(playerAI[indexPlayer].getScore());
+        console.log("the winner's score is " + playerAI[indexPlayer].getScore());
         playerAI[indexPlayer].addScore(3);
     }
 }
