@@ -2,6 +2,9 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
     let capturable = board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
+    let newPosition;
+    let capturedPosition;
+    let oldPosition;
 
     if (onBoard1 && board[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
         newPosition = (i + 2 * playerPlusMinus, j + 2);
@@ -112,7 +115,7 @@ function findEveryMove(playerPlusMinus, board) {
 
 function isThereAMove(playerPlusMinus, board) {
     let moves = [];
-    capturePossible = false;
+    let capturePossible = false;
     console.log(playerPlusMinus);
     console.log(board);
     for (let i = 0; i < board.length; i++) {
@@ -154,15 +157,15 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
 }
 
 function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
-    i = position[0];
-    j = position[1];
+    let i = position[0];
+    let j = position[1];
     let move;
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j + 2) < board.length;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < board.length && (j - 2) < board.length;
     let leftPossible = false;
     let capturable = board[i + playerPlusMinus][j + 1] === playerPlusMinus || board[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
     if (onBoard1 && board[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
-        newPosition1 = (i + 2 * playerPlusMinus, j + 2);
+        let newPosition1 = (i + 2 * playerPlusMinus, j + 2);
         move = moves.pop();
         move[1] = newPosition1;
         capturedPosition = (i + playerPlusMinus, j + 1);
@@ -179,7 +182,8 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         if (leftPossible) {
             moves.push(move)
         }
-        move[1] = (i + 2 * playerPlusMinus, j - 2);
+        let newPosition2 = (i + 2 * playerPlusMinus, j - 2);
+        move[1] = newPosition2;
         capturedPositions = move[2];
         if (capturedPositions.length > 0) {
             capturedPosition = capturedPositions.pop();
@@ -201,7 +205,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         capturable = board[i - playerPlusMinus][j + 1] === playerPlusMinus || board[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
 
         if (onBoard1 && board[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
-            newPosition1 = (i - 2 * playerPlusMinus, j - 2);
+            let newPosition1 = (i - 2 * playerPlusMinus, j - 2);
             move = moves.pop();
             move[1] = newPosition1;
             capturedPosition = (i - playerPlusMinus, j + 1);
@@ -217,7 +221,8 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
             if (leftPossible) {
                 moves.push(move)
             }
-            move[1] = (i - 2 * playerPlusMinus, j - 2);
+            let newPosition2 = (i - 2 * playerPlusMinus, j - 2);
+            move[1] = newPosition2;
             capturedPositions = move[2];
             if (capturedPositions.length > 0) {
                 capturedPosition = capturedPositions.pop();
@@ -260,7 +265,7 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
     //use alpha = -Infinity
     //use beta = +Infinity
     //depth = 2n
-    brain = playerAI.brain;
+    let brain = playerAI.brain;
     if (depth === 0) {
         input = boardToInput(board, playerPlusMinus, brain.kingValue);
         evaluation = brain.feedForward(input);
@@ -319,11 +324,12 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
         [1, 0, 1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1, 0, 1],
     ];
-    player = (-1, 1);
-    playerAI = (playerWhite, playerBlack);
-    isMaximising = (true, false);
-    indexPlayer = 0;
-    nbMovesPlayed = 0;
+    let player = (-1, 1);
+    let playerAI = (playerWhite, playerBlack);
+    let isMaximising = (true, false);
+    let indexPlayer = 0;
+    let nbMovesPlayed = 0;
+    let value; let indexMove; let moves;
     console.log(isThereAMove(player[indexPlayer], board));
     while (isThereAMove(player[indexPlayer], board) && nbMovesPlayed < 500) {
         value, indexMove, moves = pickMove(board, player[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
@@ -427,8 +433,8 @@ function builBoard(board) {
 }
 
 function displayCounter(black, white) {
-    var blackContainer = document.getElementById("black-player-count-pieces");
-    var whiteContainer = document.getElementById("white-player-count-pieces");
+    let blackContainer = document.getElementById("black-player-count-pieces");
+    let whiteContainer = document.getElementById("white-player-count-pieces");
     blackContainer.innerHTML = black;
     whiteContainer.innerHTML = white;
 }

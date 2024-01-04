@@ -1,9 +1,9 @@
 //import { organizeGames, gameBetweenAI } from "./ai_functions";
 
-pop = new Population(64);
-players = pop.population;
+let pop = new Population(64);
+let players = pop.population;
 
-gamesList = organizeGames(players);
+let gamesList = organizeGames(players);
 
 const modal = document.getElementById("easyModal");
 let game = document.getElementById("game");
