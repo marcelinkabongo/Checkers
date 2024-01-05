@@ -1,5 +1,5 @@
 function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible) {
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length;
     let newPosition = [];
@@ -117,7 +117,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
 
 function findEveryMove(playerPlusMinus, board) {
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let moves = [];
     let capturePossible = false;
     for (let i = 0; i < usableBoard.length; i++) {
@@ -134,7 +134,7 @@ function findEveryMove(playerPlusMinus, board) {
 }
 
 function isThereAMove(playerPlusMinus, board) {
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let moves = [];
     let capturePossible = false;
     for (let i = 0; i < usableBoard.length; i++) {
@@ -154,7 +154,7 @@ function isThereAMove(playerPlusMinus, board) {
 }
 
 function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let oldPosition = moves[indexMove][0];
     let newPosition = moves[indexMove][1];
     let arr = [];
@@ -184,7 +184,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
 function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
     return moves;
     console.log("i'm in double capture");
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let i = position[0];
     let j = position[1];
     let move = [];
@@ -286,7 +286,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
 }
 
 function boardToInput(board, playerPlusMinus, kingValue) {
-    let usableBoard = board;
+    let usableBoard = copyBoard(board);
     let input = new Array(34);
     let indexInput = 0;
     for (let i = 0; i < usableBoard.length; i++) {
@@ -311,8 +311,7 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
     //use alpha = -Infinity
     //use beta = +Infinity
     //depth = 2n
-    let usableBoard = [[]];
-    usableBoard = board;
+    let usableBoard = copyBoard(board);
     let brain = playerAI.brain;
     if (depth === 0) {
         //printBoard(usableBoard, "depth = 0");
@@ -461,7 +460,7 @@ function organizeGames(players) {
 }
 
 function builBoard(boardGiven) {
-    let usableBoard = boardGiven;
+    let usableBoard = copyBoard(boardGiven);
     game.innerHTML = "";
     black = 0;
     white = 0;
@@ -537,6 +536,18 @@ function printBoard(board, string){
     for (let index = 0; index < board.length; index++) {
         console.log("row " + index + " : " + board[index]);        
     }
+}
+
+function copyBoard(board){
+    let arr = new Array(board.length);
+    let arr1 = new Array(board[0].length);
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            arr1[j] = board[i][j];            
+        }
+        arr[i] = arr1;        
+    }
+    return arr;
 }
 
 //export { organizeGames, gameBetweenAI };
