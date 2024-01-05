@@ -475,6 +475,7 @@ function organizeGames(players) {
 
 function builBoard(boardGiven) {
     let usableBoard = copyBoard(boardGiven);
+    let game = document.getElementById("game");
     game.innerHTML = "";
     black = 0;
     white = 0;
@@ -519,7 +520,7 @@ function builBoard(boardGiven) {
                 occupied = "empty";
             }
 
-            console.log("IN BUILDBOARD FUNCTION after after occupied " + occupied);
+            //console.log("IN BUILDBOARD FUNCTION after occupied " + occupied);
 
             piece.setAttribute("class", "occupied " + occupied);
 
