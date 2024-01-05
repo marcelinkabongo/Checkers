@@ -3,19 +3,6 @@
 const modal = document.getElementById("easyModal");
 let game = document.getElementById("game");
 
-// let board = [
-//     [-1, 0, -1, 0, -1, 0, -1, 0],
-//     [0, -1, 0, -1, 0, -1, 0, -1],
-//     [-1, 0, -1, 0, -1, 0, -1, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 0, 0, 0, 0, 0, 0, 0],
-//     [0, 1, 0, 1, 0, 1, 0, 1],
-//     [1, 0, 1, 0, 1, 0, 1, 0],
-//     [0, 1, 0, 1, 0, 1, 0, 1],
-// ];
-
-// builBoard(board);
-
 let pop = new Population(64);
 let players = pop.population;
 

@@ -506,6 +506,8 @@ function builBoard(boardGiven) {
                 }
             }
 
+            
+
             // add the piece if the case isn't empty
             if (usableBoard[i][j] === 1) {
                 occupied = "whitePiece";
@@ -517,6 +519,7 @@ function builBoard(boardGiven) {
                 occupied = "empty";
             }
 
+            console.log("IN BUILDBOARD FUNCTION after after occupied " + occupied);
 
             piece.setAttribute("class", "occupied " + occupied);
 
