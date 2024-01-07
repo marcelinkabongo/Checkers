@@ -1,12 +1,17 @@
 //import { organizeGames, gameBetweenAI } from "./ai_functions";
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function sleep(millis)
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < millis);
 }
 
 const modal = document.getElementById("easyModal");
 let game = document.getElementById("game");
 
+console.log(modal);
 console.log(game);
 
 let board = [
