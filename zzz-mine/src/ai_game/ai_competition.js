@@ -11,6 +11,34 @@ function sleep(millis)
 const modal = document.getElementById("easyModal");
 let game = document.getElementById("game");
 
+const element = document.getElementById("game");
+let start, previousTimeStamp;
+let done = false;
+
+function step(timeStamp) {
+  if (start === undefined) {
+    start = timeStamp;
+  }
+  const elapsed = timeStamp - start;
+
+  if (previousTimeStamp !== timeStamp) {
+    // Math.min() is used here to make sure the element stops at exactly 200px
+    const count = Math.min(0.1 * elapsed, 200);
+    element.style.transform = 'none';
+    if (count === 200) done = true;
+  }
+
+  if (elapsed < 11000) {
+    // Stop the animation after 2 seconds
+    previousTimeStamp = timeStamp;
+    if (!done) {
+      window.requestAnimationFrame(step);
+    }
+  }
+}
+
+window.requestAnimationFrame(step);
+
 console.log(modal);
 console.log(game);
 
