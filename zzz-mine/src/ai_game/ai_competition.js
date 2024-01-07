@@ -24,8 +24,9 @@ function step(timeStamp) {
   if (previousTimeStamp !== timeStamp) {
     // Math.min() is used here to make sure the element stops at exactly 200px
     const count = Math.min(0.1 * elapsed, 200);
-    element.style.transform = 'none';
-    if (count === 200) done = true;
+    buildBoard(board);
+    element.style.transform = 'rotate(7deg)';
+    if (count === 1100) done = true;
   }
 
   if (elapsed < 11000) {
@@ -53,7 +54,7 @@ let board = [
     [0, 1, 0, 1, 0, 1, 0, 1],
 ];
 
-builBoard(board);
+buildBoard(board);
 
 board = [
     [-1, 0, -1, 0, -1, 0, -1, 0],
@@ -67,7 +68,7 @@ board = [
 ];
 
 sleep(5000);
-builBoard(board);
+buildBoard(board);
 
 console.log("ici");
 
@@ -85,7 +86,7 @@ board = [
 sleep(5000);
 console.log("ici 2");
 
-builBoard(board);
+buildBoard(board);
 
 let pop = new Population(64);
 let players = pop.population;

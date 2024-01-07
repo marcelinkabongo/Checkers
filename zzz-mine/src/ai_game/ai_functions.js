@@ -419,7 +419,7 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let moves = [];
     let result = [];
 
-    builBoard(board);
+    buildBoard(board);
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
         printBoard(board, "board after move : " + nbMovesPlayed);
         result = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
@@ -436,7 +436,7 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
         indexPlayer = (indexPlayer + 1) % 2;
         console.log("the new indexPlayer is " + indexPlayer);
         nbMovesPlayed++;
-        builBoard(board);
+        buildBoard(board);
     }
     // if (nbMovesPlayed === 500) {
     //     playerWhite.addScore(1);
@@ -473,7 +473,7 @@ function organizeGames(players) {
     return games;
 }
 
-function builBoard(boardGiven) {
+function buildBoard(boardGiven) {
     let usableBoard = copyBoard(boardGiven);
     let game = document.getElementById("game");
     game.innerHTML = "";
