@@ -227,7 +227,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
         }
     }
     if (playerPlusMinus === 1) { //black
-        if (newPosition[0] === usableBoard.length) {
+        if (newPosition[0] === usableBoard.length-1) {
             usableBoard[newPosition[0]][newPosition[1]] = -2;
         }
     }
