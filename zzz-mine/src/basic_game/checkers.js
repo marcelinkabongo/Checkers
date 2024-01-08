@@ -47,3 +47,5 @@ let board = [
 // ];
 
 builBoard();
+
+console.log("the code is done");

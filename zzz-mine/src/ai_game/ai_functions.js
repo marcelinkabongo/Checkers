@@ -155,17 +155,12 @@ function isThereAMove(playerPlusMinus, board) {
     return false;
 }
 
-function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
+function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = false) {
     let usableBoard = copyBoard(board);
     let usableMoves = copyMoves(moves);
     let oldPosition = usableMoves[indexMove][0];
     let newPosition = usableMoves[indexMove][1];
-    let arr = [];
-    arr = usableBoard[newPosition[0]];
-    arr.splice(newPosition[1], 1, usableBoard[oldPosition[0]][oldPosition[1]]);
-    //console.log(usableBoard);
     usableBoard[newPosition[0]][newPosition[1]] = usableBoard[oldPosition[0]][oldPosition[1]];
-    usableBoard[newPosition[0]].splice(newPosition[1], 1, usableBoard[oldPosition[0]][oldPosition[1]]);
     usableBoard[oldPosition[0]][oldPosition[1]] = 0;
     if (playerPlusMinus === -1) { //white
         if (newPosition[0] === 0) {
@@ -176,6 +171,9 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board) {
         if (newPosition[0] === usableBoard.length) {
             usableBoard[newPosition[0]][newPosition[1]] = -2;
         }
+    }
+    if (printBool) {
+        console.log("the captured positions are " + usableMoves[indexMove][2]);
     }
     for (let i = 0; i < usableMoves[indexMove][2].length; i++) {
         if (usableMoves[indexMove][2][i] === undefined) {
@@ -398,7 +396,7 @@ function pickMove(board, playerPlusMinus, playerAI, depth, alpha, beta, isMaximi
 }
 
 
-function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
+function gameBetweenAI(playerWhite, playerBlack, depth = 4) {
     let board = [
         [-1, 0, -1, 0, -1, 0, -1, 0],
         [0, -1, 0, -1, 0, -1, 0, -1],
@@ -419,34 +417,35 @@ function gameBetweenAI(playerWhite, playerBlack, depth = 4, showGame = false) {
     let moves = [];
     let result = [];
 
-    buildBoard(board);
     while (isThereAMove(playerArray[indexPlayer], board) && nbMovesPlayed < 500) {
         printBoard(board, "board after move : " + nbMovesPlayed);
         result = pickMove(board, playerArray[indexPlayer], playerAI[indexPlayer], depth, -Infinity, +Infinity, isMaximising[indexPlayer]);
         value = result[0];
         indexMove = result[1];
         moves = copyMoves(result[2]);
-        console.log("index move is " + indexMove);
-        console.log("the value of the move chosen " + value);
+        // console.log("index move is " + indexMove);
+        // console.log("the value of the move chosen " + value);
         if (indexMove === -1 || moves === null) {
             console.log("c'est la merdeee");
             throw new Error("Error in pickMove");
         }
+
         board = boardAfterMove(moves, indexMove, playerArray[indexPlayer], board);
         indexPlayer = (indexPlayer + 1) % 2;
-        console.log("the new indexPlayer is " + indexPlayer);
+        // console.log("the new indexPlayer is " + indexPlayer);
         nbMovesPlayed++;
-        buildBoard(board);
     }
-    // if (nbMovesPlayed === 500) {
-    //     playerWhite.addScore(1);
-    //     playerBlack.addScore(1);
-    // }
-    // else {
-    //     console.log("the winner's score is " + playerAI[indexPlayer].getScore());
-    //     playerAI[indexPlayer].addScore(3);
-    // }
+    if (nbMovesPlayed === 500) {
+        playerWhite.addScore(1);
+        playerBlack.addScore(1);
+    }
+    else {
+        console.log("the winner's score is " + playerAI[indexPlayer].getScore());
+        playerAI[indexPlayer].addScore(3);
+    }
 }
+
+
 
 function organizeGames(players) {
     const numberOfPlayers = players.length;
@@ -507,7 +506,7 @@ function buildBoard(boardGiven) {
                 }
             }
 
-            
+
 
             // add the piece if the case isn't empty
             if (usableBoard[i][j] === 1) {
