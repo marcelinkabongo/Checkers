@@ -61,7 +61,6 @@ function showGameBetweenAI() {
   value = result[0];
   indexMove = result[1];
   moves = copyMoves(result[2]);
-  console.log(moves);
   if (indexMove === -1 || moves === null) {
     console.log("c'est la merdeee");
     throw new Error("Error in pickMove");

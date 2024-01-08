@@ -551,10 +551,10 @@ function buildBoard(boardGiven) {
 
 
             // add the piece if the case isn't empty
-            if (usableBoard[i][j] === 1) {
+            if (usableBoard[i][j] > 0) {
                 occupied = "whitePiece";
                 white++;
-            } else if (usableBoard[i][j] === -1) {
+            } else if (usableBoard[i][j] < 0) {
                 occupied = "blackPiece";
                 black++;
             } else {
