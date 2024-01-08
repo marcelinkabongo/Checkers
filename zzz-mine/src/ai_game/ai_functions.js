@@ -3,9 +3,9 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
     let usableMoves = copyMoves(moves);
     let hasBeenModified = false;
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
-    let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length;
+    let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) >= 0;
     let capturable = false;
-    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length) {
         capturable = usableBoard[i + playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
     }
 
@@ -29,7 +29,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
     }
 
     capturable = false;
-    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length && (j - 1) >= 0) {
+    if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) >= 0) {
         capturable = usableBoard[i + playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
     }
     if (onBoard2 && usableBoard[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
@@ -53,10 +53,10 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
     if (Math.abs(usableBoard[i][j]) === 2) {
         onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
-        onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length;
+        onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j - 2) >= 0;
 
         capturable = false;
-        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length) {
             capturable = usableBoard[i - playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
         }
 
@@ -79,7 +79,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         }
 
         capturable = false;
-        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length && (j - 1) >= 0) {
+        if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) >= 0) {
             capturable = usableBoard[i - playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i - playerPlusMinus][j - 1] === playerPlusMinus * 2;
         }
 
@@ -103,7 +103,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
         if (!capturePossible) {
             onBoard1 = (i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length;
-            onBoard2 = (i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length;
+            onBoard2 = (i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) >= 0;
             if (onBoard1 && usableBoard[i - playerPlusMinus][j + 1] === 0) {
 
                 let oldPosition = new Array(2);
@@ -136,7 +136,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
     if (!capturePossible) {
         onBoard1 = (i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length;
-        onBoard2 = (i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length;
+        onBoard2 = (i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) >= 0;
         if (onBoard1 && usableBoard[i + playerPlusMinus][j + 1] === 0) {
 
             let oldPosition = new Array(2);
@@ -178,6 +178,17 @@ function findEveryMove(playerPlusMinus, board) {
                 let result = markPossibleMoves(i, j, playerPlusMinus, usableBoard, moves, capturePossible);
                 moves = copyMoves(result[0]);
                 capturePossible = result[1];
+            }
+        }
+    }
+    if (capturePossible) {
+        let i = 0;
+        while (i < moves.length && i < 1000) {
+            if (moves[i][2].length === 0) {
+                moves.splice(i, 1);
+            }
+            else {
+                i++;
             }
         }
     }
@@ -291,7 +302,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
 
     if (king) {
         onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
-        onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length;
+        onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j - 2) >= 0;
         let leftPossible = false;
 
         capturable = false;
