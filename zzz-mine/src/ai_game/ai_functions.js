@@ -3,22 +3,22 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
     let usableMoves = copyMoves(moves);
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length;
-    let oldPosition = new Array(2);
-    let newPosition = new Array(2);
-    let capturedPosition = new Array(2);
-    let capturedPositions = new Array();
-    let move = new Array(3);
-
     let capturable = false;
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
         capturable = usableBoard[i + playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus;
     }
 
     if (onBoard1 && usableBoard[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
+
+        let oldPosition = new Array(2);
+        let newPosition = new Array(2);
+        let capturedPosition = new Array(2);
+        let capturedPositions = new Array(1);
+        let move = new Array(3);
         newPosition = [i + 2 * playerPlusMinus, j + 2];
         oldPosition = [i, j];
         capturedPosition = [i + playerPlusMinus, j + 1];
-        capturedPositions.push(capturedPosition);
+        capturedPositions[0] = capturedPosition;
         move = [oldPosition, newPosition, capturedPositions];
         usableMoves.push(move);
         capturePossible = true;
@@ -30,10 +30,16 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         capturable = usableBoard[i + playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
     }
     if (onBoard2 && usableBoard[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
+
+        let oldPosition = new Array(2);
+        let newPosition = new Array(2);
+        let capturedPosition = new Array(2);
+        let capturedPositions = new Array(1);
+        let move = new Array(3);
         newPosition = [i + 2 * playerPlusMinus, j - 2];
         oldPosition = [i, j];
         capturedPosition = [i + playerPlusMinus, j - 1];
-        capturedPositions.push(capturedPosition);
+        capturedPositions[0] = capturedPosition;
         move = [oldPosition, newPosition, capturedPositions];
         usableMoves.push(move);
         capturePossible = true;
@@ -50,10 +56,16 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         }
 
         if (onBoard1 && usableBoard[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
+
+            let oldPosition = new Array(2);
+            let newPosition = new Array(2);
+            let capturedPosition = new Array(2);
+            let capturedPositions = new Array(1);
+            let move = new Array(3);
             newPosition = [i - 2 * playerPlusMinus, j + 2];
             oldPosition = [i, j];
             capturedPosition = [i - playerPlusMinus, j + 1];
-            capturedPositions.push(capturedPosition);
+            capturedPositions[0] = capturedPosition;
             move = [oldPosition, newPosition, capturedPositions];
             usableMoves.push(move);
             capturePossible = true;
@@ -66,10 +78,16 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         }
 
         if (onBoard2 && usableBoard[i - 2 * playerPlusMinus][j - 2] === 0 && capturable) {
+
+            let oldPosition = new Array(2);
+            let newPosition = new Array(2);
+            let capturedPosition = new Array(2);
+            let capturedPositions = new Array();
+            let move = new Array(3);
             newPosition = [i - 2 * playerPlusMinus, j - 2];
             oldPosition = [i, j];
             capturedPosition = [i - playerPlusMinus, j - 1];
-            capturedPositions.push(capturedPosition);
+            capturedPositions[0] = capturedPosition;
             move = [oldPosition, newPosition, capturedPositions];
             usableMoves.push(move);
             capturePossible = true;
@@ -80,6 +98,11 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             onBoard1 = (i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length;
             onBoard2 = (i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length;
             if (onBoard1 && usableBoard[i - playerPlusMinus][j + 1] === 0) {
+
+                let oldPosition = new Array(2);
+                let newPosition = new Array(2);
+                let capturedPositions = new Array();
+                let move = new Array(3);
                 newPosition = [i - playerPlusMinus, j + 1];
                 oldPosition = [i, j];
                 move = [oldPosition, newPosition, capturedPositions];
@@ -87,6 +110,11 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             }
 
             if (onBoard2 && usableBoard[i - playerPlusMinus][j - 1] === 0) {
+
+                let oldPosition = new Array(2);
+                let newPosition = new Array(2);
+                let capturedPositions = new Array();
+                let move = new Array(3);
                 newPosition = [i - playerPlusMinus, j - 1];
                 oldPosition = [i, j];
                 move = [oldPosition, newPosition, capturedPositions];
@@ -100,6 +128,11 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         onBoard1 = (i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length;
         onBoard2 = (i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length;
         if (onBoard1 && usableBoard[i + playerPlusMinus][j + 1] === 0) {
+
+            let oldPosition = new Array(2);
+            let newPosition = new Array(2);
+            let capturedPositions = new Array();
+            let move = new Array(3);
             newPosition = [i + playerPlusMinus, j + 1];
             oldPosition = [i, j];
             move = [oldPosition, newPosition, capturedPositions];
@@ -107,13 +140,20 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         }
 
         if (onBoard2 && usableBoard[i + playerPlusMinus][j - 1] === 0) {
+
+            let oldPosition = new Array(2);
+            let newPosition = new Array(2);
+            let capturedPositions = new Array();
+            let move = new Array(3);
             newPosition = [i + playerPlusMinus, j - 1];
             oldPosition = [i, j];
             move = [oldPosition, newPosition, capturedPositions];
             usableMoves.push(move);
         }
     }
-
+    if (capturePossible) {
+        //console.log(usableMoves);
+    }
     return [usableMoves, capturePossible];
 }
 
@@ -173,7 +213,9 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
         }
     }
     if (printBool) {
-        console.log("the captured positions are " + usableMoves[indexMove][2]);
+        console.log("the captured positions are");
+        console.log(usableMoves[indexMove][2]);
+        console.log(moves[indexMove][2]);
     }
     for (let i = 0; i < usableMoves[indexMove][2].length; i++) {
         if (usableMoves[indexMove][2][i] === undefined) {
@@ -186,7 +228,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
 }
 
 function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
-    // return moves;
+    return moves;
     // console.log("i'm in double capture");
     let usableBoard = copyBoard(board);
     let usableMoves = copyMoves(moves);
