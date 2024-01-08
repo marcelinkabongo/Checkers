@@ -242,7 +242,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
 }
 
 function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
-    return moves;
+    //return moves;
     // console.log("i'm in double capture");
     let usableBoard = copyBoard(board);
     let usableMoves = copyMoves(moves);
