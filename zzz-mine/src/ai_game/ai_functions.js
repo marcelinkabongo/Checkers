@@ -25,6 +25,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         hasBeenModified = true;
 
         capturePossible = true;
+        console.log("doubleCapture case 1");
         usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves);
     }
 
@@ -48,6 +49,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         hasBeenModified = true;
 
         capturePossible = true;
+        console.log("doubleCapture case 2");
         usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves);
     }
 
@@ -75,6 +77,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             usableMoves.push(move);
             hasBeenModified = true;
             capturePossible = true;
+            console.log("doubleCapture case 3");
             usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves, king = true);
         }
 
@@ -98,6 +101,7 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             usableMoves.push(move);
             hasBeenModified = true;
             capturePossible = true;
+            console.log("doubleCapture case 4");
             usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves, king = true);
         }
 
@@ -244,7 +248,11 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
 function doubleCapture(playerPlusMinus, board, position, moves, king = false, depth = 1) {
     //return moves;
     // console.log("i'm in double capture");
-    let usableBoard = copyBoard(board);
+    if (depth > 30) {
+        console.log("problemsssss " + depth);
+        return -1;
+    }
+    let usableBoard = board;
     let usableMoves = copyMoves(moves);
     let i = position[0];
     let j = position[1];
@@ -282,6 +290,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
             usableMoves.push(moveCopy);
         }
         while (move[2][move[2].length - 1][2] >= depth) {
+            console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
             move[2].pop();
         }
         let newPosition2 = [i + 2 * playerPlusMinus, j - 2];
@@ -314,6 +323,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
                 usableMoves.push(moveCopy);
             }
             while (move[2][move[2].length - 1][2] >= depth) {
+                console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
                 move[2].pop();
             }
             move[1] = newPosition1;
@@ -335,6 +345,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
                 usableMoves.push(moveCopy);
             }
             while (move[2][move[2].length - 1][2] >= depth) {
+                console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
                 move[2].pop();
             }
             let newPosition2 = [i - 2 * playerPlusMinus, j - 2];
