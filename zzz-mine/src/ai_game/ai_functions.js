@@ -13,12 +13,12 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
         let oldPosition = new Array(2);
         let newPosition = new Array(2);
-        let capturedPosition = new Array(2);
+        let capturedPosition = new Array(3);
         let capturedPositions = new Array(1);
         let move = new Array(3);
         newPosition = [i + 2 * playerPlusMinus, j + 2];
         oldPosition = [i, j];
-        capturedPosition = [i + playerPlusMinus, j + 1];
+        capturedPosition = [i + playerPlusMinus, j + 1, 0];
         capturedPositions[0] = capturedPosition;
         move = [oldPosition, newPosition, capturedPositions];
         usableMoves.push(move);
@@ -36,12 +36,12 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
         let oldPosition = new Array(2);
         let newPosition = new Array(2);
-        let capturedPosition = new Array(2);
+        let capturedPosition = new Array(3);
         let capturedPositions = new Array(1);
         let move = new Array(3);
         newPosition = [i + 2 * playerPlusMinus, j - 2];
         oldPosition = [i, j];
-        capturedPosition = [i + playerPlusMinus, j - 1];
+        capturedPosition = [i + playerPlusMinus, j - 1, 0];
         capturedPositions[0] = capturedPosition;
         move = [oldPosition, newPosition, capturedPositions];
         usableMoves.push(move);
@@ -64,12 +64,12 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
             let oldPosition = new Array(2);
             let newPosition = new Array(2);
-            let capturedPosition = new Array(2);
+            let capturedPosition = new Array(3);
             let capturedPositions = new Array(1);
             let move = new Array(3);
             newPosition = [i - 2 * playerPlusMinus, j + 2];
             oldPosition = [i, j];
-            capturedPosition = [i - playerPlusMinus, j + 1];
+            capturedPosition = [i - playerPlusMinus, j + 1, 0];
             capturedPositions[0] = capturedPosition;
             move = [oldPosition, newPosition, capturedPositions];
             usableMoves.push(move);
@@ -87,12 +87,12 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
 
             let oldPosition = new Array(2);
             let newPosition = new Array(2);
-            let capturedPosition = new Array(2);
+            let capturedPosition = new Array(3);
             let capturedPositions = new Array();
             let move = new Array(3);
             newPosition = [i - 2 * playerPlusMinus, j - 2];
             oldPosition = [i, j];
-            capturedPosition = [i - playerPlusMinus, j - 1];
+            capturedPosition = [i - playerPlusMinus, j - 1, 0];
             capturedPositions[0] = capturedPosition;
             move = [oldPosition, newPosition, capturedPositions];
             usableMoves.push(move);
@@ -227,7 +227,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
         }
     }
     if (playerPlusMinus === 1) { //black
-        if (newPosition[0] === usableBoard.length-1) {
+        if (newPosition[0] === usableBoard.length - 1) {
             usableBoard[newPosition[0]][newPosition[1]] = -2;
         }
     }
@@ -241,7 +241,7 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
     return usableBoard;
 }
 
-function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
+function doubleCapture(playerPlusMinus, board, position, moves, king = false, depth = 1) {
     //return moves;
     // console.log("i'm in double capture");
     let usableBoard = copyBoard(board);
@@ -251,10 +251,8 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
     let move = [];
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length && (j + 2) >= 0;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length && (j - 2) >= 0;
-    let leftPossible = false;
     let capturable = false;
     let capturedPosition = [];
-    let capturedPositions = [];
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
         capturable = (usableBoard[i + playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus);
     }
@@ -262,13 +260,16 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         let newPosition1 = [i + 2 * playerPlusMinus, j + 2];
         move = usableMoves.pop();
         move[1] = newPosition1;
-        capturedPosition = [i + playerPlusMinus, j + 1];
+        capturedPosition = [i + playerPlusMinus, j + 1, depth];
         move[2].push(capturedPosition);
         usableMoves.push(move);
-        usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves);
-        leftPossible = true;
+        if ((playerPlusMinus === 1 && newPosition1[0] === 7) || (playerPlusMinus === -1 && newPosition1[0] === 0)) {
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depth = depth + 1);
+        }
+        else {
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = false, depth = depth + 1);
+        }
     }
-
     capturable = false;
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length && (j - 1) >= 0) {
         capturable = usableBoard[i + playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
@@ -276,34 +277,29 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
 
     if (onBoard2 && usableBoard[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
         move = usableMoves.pop();
-        if (leftPossible) {
-            usableMoves.push(move)
+        let moveCopy = copySingularMove(move);
+        if (move[2][move[2].length - 1][2] !== depth - 1) {
+            usableMoves.push(moveCopy);
+        }
+        while (move[2][move[2].length - 1][2] >= depth) {
+            move[2].pop();
         }
         let newPosition2 = [i + 2 * playerPlusMinus, j - 2];
         move[1] = newPosition2;
-        capturedPositions = move[2];
-        if (capturedPositions.length > 0) {
-            capturedPosition = capturedPositions.pop();
-            if (capturedPosition === undefined) {
-
-            }
-            else {
-                while (capturedPosition[0] * playerPlusMinus > (i + playerPlusMinus) * playerPlusMinus) {
-                    capturedPosition = capturedPositions.pop();
-                }
-            }
-        }
-        capturedPosition = [i + playerPlusMinus, j - 1];
-        capturedPositions.push(capturedPosition);
-        move[2] = capturedPositions;
+        capturedPosition = [i + playerPlusMinus, j - 1, depth];
+        move[2].push(capturedPosition);
         usableMoves.push(move);
-        usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves);
+        if ((playerPlusMinus === 1 && newPosition2[0] === 7) || (playerPlusMinus === -1 && newPosition2[0] === 0)) {
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depth = depth + 1);
+        }
+        else {
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = false, depth = depth + 1);
+        }
     }
 
     if (king) {
         onBoard1 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length;
         onBoard2 = (i - 2 * playerPlusMinus) >= 0 && (i - 2 * playerPlusMinus) < usableBoard.length && (j - 2) >= 0;
-        let leftPossible = false;
 
         capturable = false;
         if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
@@ -313,12 +309,18 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
         if (onBoard1 && usableBoard[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
             let newPosition1 = [i - 2 * playerPlusMinus, j - 2];
             move = usableMoves.pop();
+            let moveCopy = copySingularMove(move);
+            if (move[2][move[2].length - 1][2] !== depth - 1) {
+                usableMoves.push(moveCopy);
+            }
+            while (move[2][move[2].length - 1][2] >= depth) {
+                move[2].pop();
+            }
             move[1] = newPosition1;
-            capturedPosition = [i - playerPlusMinus, j + 1];
+            capturedPosition = [i - playerPlusMinus, j + 1, depth];
             move[2].push(capturedPosition);
             usableMoves.push(move);
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves);
-            leftPossible = true;
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depth = depth +1);
         }
 
         capturable = false;
@@ -328,28 +330,19 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false) {
 
         if (onBoard2 && usableBoard[i - 2 * playerPlusMinus][j - 2] === 0 && capturable) {
             move = usableMoves.pop();
-            if (leftPossible) {
-                usableMoves.push(move)
+            let moveCopy = copySingularMove(move);
+            if (move[2][move[2].length - 1][2] !== depth - 1) {
+                usableMoves.push(moveCopy);
+            }
+            while (move[2][move[2].length - 1][2] >= depth) {
+                move[2].pop();
             }
             let newPosition2 = [i - 2 * playerPlusMinus, j - 2];
             move[1] = newPosition2;
-            capturedPositions = move[2];
-            if (capturedPositions.length > 0) {
-                capturedPosition = capturedPositions.pop();
-                if (capturedPosition === undefined) {
-
-                }
-                else {
-                    while (capturedPosition[0] * playerPlusMinus > (i - playerPlusMinus) * playerPlusMinus) {
-                        capturedPosition = capturedPositions.pop();
-                    }
-                }
-            }
             capturedPosition = [i - playerPlusMinus, j - 1];
-            capturedPositions.push(capturedPosition);
-            move[2] = capturedPositions;
+            move[2].push(capturedPosition);
             usableMoves.push(move);
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves);
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depth = depth + 1);
         }
     }
 
@@ -628,13 +621,12 @@ function copyMoves(moves) {
             oldPosition[j] = moves[i][0][j];
             newPosition[j] = moves[i][1][j];
         }
-        let capturedPosition = new Array(2);
+        let capturedPosition = new Array(3);
         let capturedPositions;
         if (moves[i][2].length === 0) {
             capturedPositions = new Array();
         }
         else {
-
             capturedPositions = new Array(moves[i][2].length);
             for (let j = 0; j < moves[i][2].length; j++) {
                 if (moves[i][2][j] === undefined) {
@@ -642,6 +634,7 @@ function copyMoves(moves) {
                 }
                 capturedPosition[0] = moves[i][2][j][0];
                 capturedPosition[1] = moves[i][2][j][1];
+                capturedPosition[2] = moves[i][2][j][2];
                 capturedPositions[j] = capturedPosition;
             }
         }
@@ -652,6 +645,37 @@ function copyMoves(moves) {
     }
 
     return arr;
+}
+
+function copySingularMove(move) {
+    let copy = new Array(3);
+    let oldPosition = new Array(2);
+    let newPosition = new Array(2);
+    for (let j = 0; j < 2; j++) {
+        oldPosition[j] = move[0][j];
+        newPosition[j] = move[1][j];
+    }
+    let capturedPosition = new Array(3);
+    let capturedPositions;
+    if (move[2].length === 0) {
+        capturedPositions = new Array();
+    }
+    else {
+        capturedPositions = new Array(move[2].length);
+        for (let j = 0; j < move[2].length; j++) {
+            if (move[2][j] === undefined) {
+                break;
+            }
+            capturedPosition[0] = move[2][j][0];
+            capturedPosition[1] = move[2][j][1];
+            capturedPosition[2] = move[2][j][2];
+            capturedPositions[j] = capturedPosition;
+        }
+    }
+    copy[0] = oldPosition;
+    copy[1] = newPosition;
+    copy[2] = capturedPositions;
+    return copy;
 }
 
 //export { organizeGames, gameBetweenAI };

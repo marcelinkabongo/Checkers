@@ -8,8 +8,9 @@ forcer la capture                                       done
 
 AI
 
-force the capture
 
-it seems like going backwards is not possible for black
+create depth in captured positions for double capture
+transform pawn into king mid double capture
+when double capture only the last pawn disappears
 
 
