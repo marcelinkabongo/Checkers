@@ -37,7 +37,7 @@ let value = 0;
 let indexMove = 0;
 let moves = [];
 let result = [];
-let depth = 2;
+let depth = 1;
 
 
 let board = [

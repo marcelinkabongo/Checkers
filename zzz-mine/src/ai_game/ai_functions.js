@@ -25,7 +25,6 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         hasBeenModified = true;
 
         capturePossible = true;
-        console.log("doubleCapture case 1");
         usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves);
     }
 
@@ -49,7 +48,6 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
         hasBeenModified = true;
 
         capturePossible = true;
-        console.log("doubleCapture case 2");
         usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves);
     }
 
@@ -77,7 +75,6 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             usableMoves.push(move);
             hasBeenModified = true;
             capturePossible = true;
-            console.log("doubleCapture case 3");
             usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves, king = true);
         }
 
@@ -101,7 +98,6 @@ function markPossibleMoves(i, j, playerPlusMinus, board, moves, capturePossible)
             usableMoves.push(move);
             hasBeenModified = true;
             capturePossible = true;
-            console.log("doubleCapture case 4");
             usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition, usableMoves, king = true);
         }
 
@@ -221,8 +217,8 @@ function isThereAMove(playerPlusMinus, board) {
 function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = false) {
     let usableBoard = copyBoard(board);
     let usableMoves = copyMoves(moves);
-    let oldPosition = usableMoves[indexMove][0];
-    let newPosition = usableMoves[indexMove][1];
+    const oldPosition = usableMoves[indexMove][0];
+    const newPosition = usableMoves[indexMove][1];
     usableBoard[newPosition[0]][newPosition[1]] = usableBoard[oldPosition[0]][oldPosition[1]];
     usableBoard[oldPosition[0]][oldPosition[1]] = 0;
     if (playerPlusMinus === -1) { //white
@@ -239,17 +235,17 @@ function boardAfterMove(moves, indexMove, playerPlusMinus, board, printBool = fa
         if (usableMoves[indexMove][2][i] === undefined) {
             break;
         }
-        capturedPosition = usableMoves[indexMove][2][i];
+        const capturedPosition = usableMoves[indexMove][2][i];
         usableBoard[capturedPosition[0]][capturedPosition[1]] = 0;
     }
     return usableBoard;
 }
 
-function doubleCapture(playerPlusMinus, board, position, moves, king = false, depth = 1) {
+function doubleCapture(playerPlusMinus, board, position, moves, king = false, depthCapture = 1) {
     //return moves;
     // console.log("i'm in double capture");
-    if (depth > 30) {
-        console.log("problemsssss " + depth);
+    if (depthCapture > 30) {
+        console.log("problemsssss " + depthCapture);
         return -1;
     }
     let usableBoard = board;
@@ -261,48 +257,88 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length && (j - 2) >= 0;
     let capturable = false;
     let capturedPosition = [];
+    let newDepth = depthCapture + 1;
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
         capturable = (usableBoard[i + playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus);
     }
+    if (capturable && move[2] !== undefined) {
+        for (let indexCapturable = 0; indexCapturable < move[2].length; indexCapturable++) {
+            if (move[2][indexCapturable][0] === i + playerPlusMinus && move[2][indexCapturable][1] === j + 1) {
+                console.log("a servi a qqch");
+                capturable = false;
+                break;
+            }
+        }
+    }
     if (onBoard1 && usableBoard[i + 2 * playerPlusMinus][j + 2] === 0 && capturable) {
-        let newPosition1 = [i + 2 * playerPlusMinus, j + 2];
+        let newPosition1 = new Array(2);
+        newPosition1 = [i + 2 * playerPlusMinus, j + 2];
         move = usableMoves.pop();
         move[1] = newPosition1;
-        capturedPosition = [i + playerPlusMinus, j + 1, depth];
+        capturedPosition = [i + playerPlusMinus, j + 1, depthCapture];
         move[2].push(capturedPosition);
+        const copy = copySingularMove(move);
+        console.log(copy[2]);
+        console.log("capturedPosition ^^^^ depthcapture = " + depthCapture);
         usableMoves.push(move);
+        if (depthCapture === 20) {
+            console.log("recursion problem 1");
+        }
         if ((playerPlusMinus === 1 && newPosition1[0] === 7) || (playerPlusMinus === -1 && newPosition1[0] === 0)) {
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depth = depth + 1);
+            console.log("new king in double capture");
+            console.log("player " + playerPlusMinus + "new position " + newPosition1 + "is a king? " + king);
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depthCapture = newDepth);
         }
         else {
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = false, depth = depth + 1);
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = king, depthCapture = newDepth);
         }
     }
     capturable = false;
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length && (j - 1) >= 0) {
         capturable = usableBoard[i + playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j - 1] === 2 * playerPlusMinus;
     }
+    if (capturable && move[2] !== undefined) {
+        for (let indexCapturable = 0; indexCapturable < move[2].length; indexCapturable++) {
+            if (move[2][indexCapturable][0] === i + playerPlusMinus && move[2][indexCapturable][1] === j - 1) {
+                console.log("a servi a qqch");
+                capturable = false;
+                break;
+            }
+        }
+    }
 
     if (onBoard2 && usableBoard[i + 2 * playerPlusMinus][j - 2] === 0 && capturable) {
         move = usableMoves.pop();
-        let moveCopy = copySingularMove(move);
-        if (move[2][move[2].length - 1][2] !== depth - 1) {
+        const moveCopy = copySingularMove(move);
+        if (move[2][move[2].length - 1][2] > depthCapture - 1) {
             usableMoves.push(moveCopy);
         }
-        while (move[2][move[2].length - 1][2] >= depth) {
-            console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
+        while (move[2][move[2].length - 1][2] >= depthCapture) {
+            console.log(move[2][move[2].length - 1][2] + ' is greater than depthCapture: ' + depthCapture);
             move[2].pop();
+            const copy = copySingularMove(move);
+            console.log(copy[2]);
+            console.log("capturedPosition ^^^^ in the removing loop");
         }
-        let newPosition2 = [i + 2 * playerPlusMinus, j - 2];
+        let newPosition2 = new Array(2);
+        newPosition2 = [i + 2 * playerPlusMinus, j - 2];
         move[1] = newPosition2;
-        capturedPosition = [i + playerPlusMinus, j - 1, depth];
+        capturedPosition = [i + playerPlusMinus, j - 1, depthCapture];
         move[2].push(capturedPosition);
+        const copy = copySingularMove(move);
+        console.log(copy[2]);
+        console.log("capturedPosition ^^^^ depthcapture = " + depthCapture);
         usableMoves.push(move);
+        if (depthCapture === 20) {
+            console.log("recursion problem 2");
+        }
         if ((playerPlusMinus === 1 && newPosition2[0] === 7) || (playerPlusMinus === -1 && newPosition2[0] === 0)) {
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depth = depth + 1);
+            console.log("new king in double capture");
+            console.log("player " + playerPlusMinus + "new position " + newPosition2 + "is a king? " + king);
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depthCapture = newDepth);
         }
         else {
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = false, depth = depth + 1);
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = king, depthCapture = newDepth);
         }
     }
 
@@ -314,46 +350,79 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
         if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
             capturable = usableBoard[i - playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i - playerPlusMinus][j + 1] === 2 * playerPlusMinus;
         }
+        if (capturable && move[2] !== undefined) {
+            for (let indexCapturable = 0; indexCapturable < move[2].length; indexCapturable++) {
+                if (move[2][indexCapturable][0] === i - playerPlusMinus && move[2][indexCapturable][1] === j + 1) {
+                    console.log("a servi a qqch");
+                    capturable = false;
+                    break;
+                }
+            }
+        }
 
         if (onBoard1 && usableBoard[i - 2 * playerPlusMinus][j + 2] === 0 && capturable) {
-            let newPosition1 = [i - 2 * playerPlusMinus, j - 2];
+            let newPosition1 = new Array(2);
+            newPosition1 = [i - 2 * playerPlusMinus, j - 2];
             move = usableMoves.pop();
             let moveCopy = copySingularMove(move);
-            if (move[2][move[2].length - 1][2] !== depth - 1) {
+            if (move[2][move[2].length - 1][2] !== depthCapture - 1) {
                 usableMoves.push(moveCopy);
             }
-            while (move[2][move[2].length - 1][2] >= depth) {
-                console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
+            while (move[2][move[2].length - 1][2] >= depthCapture) {
+                console.log(move[2][move[2].length - 1][2] + ' is greater than depthCapture: ' + depthCapture);
                 move[2].pop();
             }
             move[1] = newPosition1;
-            capturedPosition = [i - playerPlusMinus, j + 1, depth];
+            capturedPosition = [i - playerPlusMinus, j + 1, depthCapture];
             move[2].push(capturedPosition);
+            const copy = copySingularMove(move);
+            console.log(copy[2]);
+            console.log("capturedPosition ^^^^ depthcapture = " + depthCapture);
             usableMoves.push(move);
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depth = depth +1);
+            if (depthCapture === 20) {
+                console.log("recursion problem 3");
+            }
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition1, usableMoves, king = true, depthCapture = newDepth);
         }
 
         capturable = false;
         if ((i - playerPlusMinus) >= 0 && (i - playerPlusMinus) < usableBoard.length && (j - 1) < usableBoard.length && (j - 1) >= 0) {
             capturable = usableBoard[i - playerPlusMinus][j - 1] === playerPlusMinus || usableBoard[i - playerPlusMinus][j - 1] === 2 * playerPlusMinus;
         }
+        if (capturable && move[2] !== undefined) {
+            for (let indexCapturable = 0; indexCapturable < move[2].length; indexCapturable++) {
+                if (move[2][indexCapturable][0] === i - playerPlusMinus && move[2][indexCapturable][1] === j - 1) {
+                    console.log("a servi a qqch");
+                    capturable = false;
+                    break;
+                }
+            }
+        }
 
         if (onBoard2 && usableBoard[i - 2 * playerPlusMinus][j - 2] === 0 && capturable) {
             move = usableMoves.pop();
             let moveCopy = copySingularMove(move);
-            if (move[2][move[2].length - 1][2] !== depth - 1) {
+            if (move[2][move[2].length - 1][2] !== depthCapture - 1) {
                 usableMoves.push(moveCopy);
             }
-            while (move[2][move[2].length - 1][2] >= depth) {
-                console.log(move[2][move[2].length - 1][2] + ' is greater than depth: ' + depth);
+            while (move[2][move[2].length - 1][2] >= depthCapture) {
+                console.log(move[2][move[2].length - 1][2] + ' is greater than depthCapture: ' + depthCapture);
+                console.log("captured positions " + move[2]);
                 move[2].pop();
             }
-            let newPosition2 = [i - 2 * playerPlusMinus, j - 2];
+            let newPosition2 = new Array(2);
+            newPosition2 = [i - 2 * playerPlusMinus, j - 2];
             move[1] = newPosition2;
-            capturedPosition = [i - playerPlusMinus, j - 1];
+            capturedPosition = [i - playerPlusMinus, j - 1, depthCapture];
             move[2].push(capturedPosition);
+            const copy = copySingularMove(move);
+            console.log(copy[2]);
+            console.log("capturedPosition ^^^^ depthcapture = " + depthCapture);
             usableMoves.push(move);
-            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depth = depth + 1);
+            if (depthCapture === 20) {
+                console.log("recursion problem 4");
+            }
+            usableMoves = doubleCapture(playerPlusMinus, usableBoard, newPosition2, usableMoves, king = true, depthCapture = newDepth);
         }
     }
 
