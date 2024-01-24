@@ -256,7 +256,6 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
     let onBoard1 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j + 2) < usableBoard.length && (j + 2) >= 0;
     let onBoard2 = (i + 2 * playerPlusMinus) >= 0 && (i + 2 * playerPlusMinus) < usableBoard.length && (j - 2) < usableBoard.length && (j - 2) >= 0;
     let capturable = false;
-    let capturedPosition = [];
     let newDepth = depthCapture + 1;
     if ((i + playerPlusMinus) >= 0 && (i + playerPlusMinus) < usableBoard.length && (j + 1) < usableBoard.length && (j + 1) >= 0) {
         capturable = (usableBoard[i + playerPlusMinus][j + 1] === playerPlusMinus || usableBoard[i + playerPlusMinus][j + 1] === 2 * playerPlusMinus);
@@ -275,6 +274,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
         newPosition1 = [i + 2 * playerPlusMinus, j + 2];
         move = usableMoves.pop();
         move[1] = newPosition1;
+        let capturedPosition = new Array(3);
         capturedPosition = [i + playerPlusMinus, j + 1, depthCapture];
         move[2].push(capturedPosition);
         const copy = copySingularMove(move);
@@ -323,6 +323,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
         let newPosition2 = new Array(2);
         newPosition2 = [i + 2 * playerPlusMinus, j - 2];
         move[1] = newPosition2;
+        let capturedPosition = new Array(3);
         capturedPosition = [i + playerPlusMinus, j - 1, depthCapture];
         move[2].push(capturedPosition);
         const copy = copySingularMove(move);
@@ -373,6 +374,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
                 move[2].pop();
             }
             move[1] = newPosition1;
+            let capturedPosition = new Array(3);
             capturedPosition = [i - playerPlusMinus, j + 1, depthCapture];
             move[2].push(capturedPosition);
             const copy = copySingularMove(move);
@@ -413,6 +415,7 @@ function doubleCapture(playerPlusMinus, board, position, moves, king = false, de
             let newPosition2 = new Array(2);
             newPosition2 = [i - 2 * playerPlusMinus, j - 2];
             move[1] = newPosition2;
+            let capturedPosition = new Array(3);
             capturedPosition = [i - playerPlusMinus, j - 1, depthCapture];
             move[2].push(capturedPosition);
             const copy = copySingularMove(move);
